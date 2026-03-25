@@ -54,6 +54,7 @@ done < /tmp/world
 
 # Find user with id 1000
 SUSER=$(awk -F: '$3 == 1000 {print $1}' /etc/passwd)
+SUSERID=$(id -u $SUSER)
 
 if [ -z "$SUSER" ]; then
   echo "Error: No user with ID 1000 found. Please create a user first."
@@ -92,7 +93,7 @@ rc-update add greetd
 # Set XDG_RUNTIME_DIR
 cat << EOF > /home/${SUSER}/.profile
 if [ -z "\$XDG_RUNTIME_DIR" ]; then
-  XDG_RUNTIME_DIR="/tmp/1000-runtime-dir"
+  XDG_RUNTIME_DIR="/tmp/${SUSERID}-runtime-dir"
   mkdir -pm 0700 \$XDG_RUNTIME_DIR
   export XDG_RUNTIME_DIR
 fi
