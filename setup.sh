@@ -53,7 +53,7 @@ while read pkg; do
 done < /tmp/world
 
 # Find user with id 1000
-SUSER=$(id 1000|cut -d'(' -f2|cut -d')' -f1)
+SUSER=$(awk -F: '$3 == 1000 {print $1}' /etc/passwd)
 
 if [ -z "$SUSER" ]; then
   echo "Error: No user with ID 1000 found. Please create a user first."
