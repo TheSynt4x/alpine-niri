@@ -142,7 +142,7 @@ binds {
     Alt+Tab { toggle-overview; }
     Alt+T { spawn "$TERMINAL"; }
     Alt+E { spawn "$EXPLORER"; }
-    Alt+R { spawn "rofi" "-show-icons" "-show" "drun" }
+    Alt+R { spawn "rofi" "-show-icons" "-show" "drun"; }
     Alt+C { close-window; }
     Alt+Return { maximize-column; }
     Alt+V { toggle-window-floating; }
