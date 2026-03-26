@@ -5,10 +5,10 @@
     "mod": "dock",
     "exclusive": true,
     "gtk-layer-shell": true,
-    "margin-top": 5,
-    "margin-left": 10,
-    "margin-right": 10,
-    "height": 41,
+    "margin-top": 0,
+    "margin-left": 0,
+    "margin-right": 0,
+    "height": 40,
     "modules-left": [
       "niri/workspaces",
       "niri/window"
@@ -28,13 +28,13 @@
       "custom/power-menu"
     ],
     "niri/workspaces": {
-      "format": "{index}",
+      "format": "{index} {icon}",
       "active-only": false,
       "all-outputs": true
     },
     "niri/window": {
       "max-length": 30,
-      "format": "{title}",
+      "format": "{}",
       "rewrite": {
         "(.*)": "Babaji"
       }

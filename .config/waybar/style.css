@@ -1,5 +1,5 @@
-/* Color Palette */
-@define-color base rgba(25, 25, 25, 0.9);
+/* Color Palette - Catppuccin Mocha Inspired */
+@define-color base rgba(25, 25, 25, 0.95);
 @define-color surface rgba(45, 45, 45, 1);
 @define-color text #e6e6e6;
 @define-color rosewater #f5e0dc;
@@ -19,11 +19,11 @@
     border-radius: 0;
 }
 
-/* The Full Bar */
+/* The Full Width Bar */
 window#waybar {
     background-color: @base;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     color: @text;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Common Pill Style for all modules */
@@ -40,13 +40,43 @@ window#waybar {
 #clock,
 #custom-power-menu {
     background-color: @surface;
-    padding: 2px 12px;
-    margin: 4px 3px; /* This creates the separation inside the bar */
-    border-radius: 10px;
+    padding: 2px 10px;
+    margin: 4px 3px;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(.55,-0.04,.3,1.44);
 }
 
-/* Individual Module Colors (Text/Icons) */
-#workspaces button.active { color: @rosewater; }
+/* --- Workspaces --- */
+#workspaces {
+    background: transparent;
+    padding: 0;
+}
+
+#workspaces button {
+    background-color: @surface;
+    color: @text;
+    margin: 0 2px;
+    padding: 0 8px;
+    border-radius: 6px;
+}
+
+/* Fixed Active State (Not "ass" anymore) */
+#workspaces button.active {
+    background-color: @lavender;
+    color: @base;
+}
+
+#workspaces button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Window Title --- */
+#window {
+    color: @text;
+    background: transparent;
+}
+
+/* --- Module Specific Colors --- */
 #disk { color: @text; }
 #cpu { color: @maroon; }
 #memory { color: @sky; }
@@ -55,20 +85,36 @@ window#waybar {
 #pulseaudio { color: @green; }
 #battery { color: @sapphire; }
 #clock { color: @rosewater; }
-#custom-power-menu { color: @flamingo; background: transparent; }
+#language { color: @text; }
+#custom-power-menu { 
+    color: @flamingo; 
+    background: transparent;
+    padding-right: 15px;
+}
 
-/* Special hover effect for the pills */
-#disk:hover, #cpu:hover, #memory:hover, #network:hover, #pulseaudio:hover {
+/* --- Hover Effects for Right Side --- */
+#disk:hover, 
+#cpu:hover, 
+#memory:hover, 
+#backlight:hover, 
+#network:hover, 
+#pulseaudio:hover, 
+#battery:hover, 
+#clock:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Workspaces specific - removing the default pill bg to let the buttons shine */
-#workspaces {
-    background: transparent;
+/* --- Battery States --- */
+#battery.warning { color: @yellow; }
+#battery.critical:not(.charging) {
+    color: @flamingo;
+    animation: blink 0.5s linear infinite alternate;
 }
-#workspaces button {
-    background-color: @surface;
-    margin: 0 2px;
-    border-radius: 8px;
-    color: @text;
+
+@keyframes blink {
+    to { opacity: 0.5; }
 }
+
+/* Remove margin for first/last items to touch edges better */
+.modules-left { margin-left: 5px; }
+.modules-right { margin-right: 5px; }
