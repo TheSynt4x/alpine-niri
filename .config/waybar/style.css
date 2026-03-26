@@ -118,3 +118,7 @@ window#waybar {
 /* Remove margin for first/last items to touch edges better */
 .modules-left { margin-left: 5px; }
 .modules-right { margin-right: 5px; }
+
+window#waybar.empty {
+  opacity: 0;
+}
