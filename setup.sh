@@ -75,6 +75,7 @@ swaylock
 firefox
 pavucontrol
 fastfetch
+micro
 
 zsh
 docker
@@ -86,7 +87,7 @@ xdg-desktop-portal
 xdg-desktop-portal-wlr
 pipewire
 pipewire-pulse
-wireplumber 
+wireplumber
 EOF
 
 apk update
@@ -214,40 +215,37 @@ rc-service nix-daemon restart
 
 nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
 
-rm -rf /root/.oh-my-zsh/
-rm -rf /home/${SUSER}/.oh-my-zsh/
-
 # --- Safe Zsh Setup (No Nuking) ---
 chsh -s /bin/zsh $SUSER
 chsh -s /bin/zsh root
 
 # Function to install OMZ and plugins for a specific user
 setup_zsh_for_user() {
-    local target_user=$1
-    local target_home=$2
-    local z_dir="$target_home/.oh-my-zsh"
-    local c_dir="$z_dir/custom"
+  local target_user=$1
+  local target_home=$2
+  local z_dir="$target_home/.oh-my-zsh"
+  local c_dir="$z_dir/custom"
 
-    # 1. Install OMZ if missing
-    if [ ! -d "$z_dir" ]; then
-        echo "Installing Oh My Zsh for $target_user..."
-        su - ${target_user} -c "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
-    else
-        echo "Oh My Zsh already exists for $target_user, skipping..."
-    fi
+  # 1. Install OMZ if missing
+  if [ ! -d "$z_dir" ]; then
+      echo "Installing Oh My Zsh for $target_user..."
+      su - ${target_user} -c "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
+  else
+      echo "Oh My Zsh already exists for $target_user, skipping..."
+  fi
 
-    # 2. Plugins (Clone if missing, Pull if exists)
-    for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
-        local plugin_dir="$c_dir/plugins/$plugin"
-        if [ ! -d "$plugin_dir" ]; then
-            su - ${target_user} -c "git clone https://github.com/zsh-users/$plugin $plugin_dir"
-        else
-            su - ${target_user} -c "cd $plugin_dir && git pull"
-        fi
-    done
+  # 2. Plugins (Clone if missing, Pull if exists)
+  for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
+      local plugin_dir="$c_dir/plugins/$plugin"
+      if [ ! -d "$plugin_dir" ]; then
+          su - ${target_user} -c "git clone https://github.com/zsh-users/$plugin $plugin_dir"
+      else
+          su - ${target_user} -c "cd $plugin_dir && git pull"
+      fi
+  done
 
-    # 3. Fix .zshrc plugins line
-    sed -i 's/plugins=(.*)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' "$target_home/.zshrc"
+  # 3. Fix .zshrc plugins line
+  sed -i 's/plugins=(.*)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' "$target_home/.zshrc"
 }
 
 # Run for the user
