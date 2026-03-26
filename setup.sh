@@ -244,6 +244,8 @@ EOF
 
 chown -R ${SUSER}:${SUSER} /home/${SUSER}
 
+chmod +x /home/${SUSER}/.config/waybar/scripts/power-menu.sh
+
 echo "Setup done. Rebooting."
 sleep 3
 reboot
