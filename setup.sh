@@ -30,8 +30,8 @@ mesa-egl
 mesa-gbm
 mesa-gl
 # Essential Wayland libs:
+wayland
 libxkbcommon
-wayland-libs
 niri
 rofi-wayland
 seatd
