@@ -1,6 +1,6 @@
 /* Color Palette */
-@define-color base rgba(25, 25, 25, 0.85);
-@define-color surface rgba(45, 45, 45, 0.9);
+@define-color base rgba(25, 25, 25, 0.9);
+@define-color surface rgba(45, 45, 45, 1);
 @define-color text #e6e6e6;
 @define-color rosewater #f5e0dc;
 @define-color flamingo #f2cdcd;
@@ -12,28 +12,21 @@
 @define-color lavender #b4befe;
 
 * {
-  font-family: "JetBrainsMono Nerd Font", sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-  border: none;
-  border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    border: none;
+    border-radius: 0;
 }
 
+/* The Full Bar */
 window#waybar {
-  background: transparent;
+    background-color: @base;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: @text;
 }
 
-/* Island Containers */
-.modules-left,
-.modules-center,
-.modules-right {
-  background: @base;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 2px 12px;
-}
-
-/* Individual Module Spacing */
+/* Common Pill Style for all modules */
 #workspaces,
 #window,
 #disk,
@@ -44,72 +37,38 @@ window#waybar {
 #pulseaudio,
 #battery,
 #language,
-#clock {
-  margin: 0 6px;
-}
-
-/* Workspaces Styling */
-#workspaces button {
-  color: @text;
-  padding: 0 4px;
-}
-
-#workspaces button.active {
-  color: @rosewater;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-}
-
-/* Module Specific Colors (Matching the Image) */
-#disk {
-  color: @text;
-}
-
-#cpu {
-  color: @maroon;
-}
-
-#memory {
-  color: @sky;
-}
-
-#backlight {
-  color: @yellow;
-}
-
-#network {
-  color: @lavender;
-}
-
-#pulseaudio {
-  color: @green;
-}
-
-#battery {
-  color: @sapphire;
-}
-
-#clock {
-  color: @rosewater;
-}
-
+#clock,
 #custom-power-menu {
-  color: @flamingo;
-  margin-left: 8px;
+    background-color: @surface;
+    padding: 2px 12px;
+    margin: 4px 3px; /* This creates the separation inside the bar */
+    border-radius: 10px;
 }
 
-/* Critical/Warning Battery */
-#battery.warning {
-  color: @yellow;
+/* Individual Module Colors (Text/Icons) */
+#workspaces button.active { color: @rosewater; }
+#disk { color: @text; }
+#cpu { color: @maroon; }
+#memory { color: @sky; }
+#backlight { color: @yellow; }
+#network { color: @lavender; }
+#pulseaudio { color: @green; }
+#battery { color: @sapphire; }
+#clock { color: @rosewater; }
+#custom-power-menu { color: @flamingo; background: transparent; }
+
+/* Special hover effect for the pills */
+#disk:hover, #cpu:hover, #memory:hover, #network:hover, #pulseaudio:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-#battery.critical:not(.charging) {
-  color: #ff0000;
-  animation: blink 0.5s linear infinite alternate;
+/* Workspaces specific - removing the default pill bg to let the buttons shine */
+#workspaces {
+    background: transparent;
 }
-
-@keyframes blink {
-  to {
-    opacity: 0.5;
-  }
+#workspaces button {
+    background-color: @surface;
+    margin: 0 2px;
+    border-radius: 8px;
+    color: @text;
 }
