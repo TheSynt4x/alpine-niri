@@ -17,6 +17,9 @@ alpine-base
 dbus
 eudev
 font-dejavu
+font-jetbrains-mono-nerd
+adwaita-icon-theme
+hicolor-icon-theme
 alacritty
 greetd
 greetd-agreety
@@ -160,13 +163,17 @@ nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
 # zsh setup
 chsh -s /bin/zsh $SUSER
 
-# install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+# Define the custom plugin path for clarity
+ZSH_CUSTOM_DIR="/home/${SUSER}/.oh-my-zsh/custom"
 
-# install zsh plugins
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# Install OMZ as the user
+su - ${SUSER} -c "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
 
+# Install plugins as the user
+su - ${SUSER} -c "git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM_DIR}/plugins/zsh-autosuggestions"
+su - ${SUSER} -c "git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM_DIR}/plugins/zsh-syntax-highlighting"
+
+# Fix the .zshrc plugins line (running as root is fine here since we specify the path)
 sed -i 's/plugins=(git)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' /home/${SUSER}/.zshrc
 
 rc-update add docker default
