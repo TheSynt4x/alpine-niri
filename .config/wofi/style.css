@@ -1,0 +1,66 @@
+/* Wofi Style - Waybar Inspired */
+
+/* Base Colors - Using Waybar's Mocha Palette */
+@define-color base rgba(25, 25, 25, 0.65);    /* Waybar base */
+@define-color surface0 rgba(29, 31, 33, 0.9); /* Waybar surface0 */
+@define-color surface1 rgba(0, 0, 0, 0.7);    /* Waybar surface1 */
+@define-color text rgba(255, 255, 255, 0.9);                   /* Waybar text */
+@define-color subtext0 rgba(255, 255, 255, 1t); /* Waybar subtext0 */
+@define-color border rgba(255, 255, 255, 0.15);  /* Waybar border */
+@define-color highlight rgba(100, 100, 100, 0.3); /* Waybar surface2 */
+
+window {
+  font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Free";
+  margin: 0px;
+  border: 1px solid @border;  /* Waybar's border */
+  background-color: @surface0; /* Waybar's surface0 */
+  border-radius: 10px;
+}
+
+#input {
+  margin: 5px;
+  border: none;
+  color: @text;       /* Waybar's text */
+  background-color: @base; /* Waybar's base */
+  border-radius: 5px;
+  padding: 3px;
+}
+
+#inner-box {
+  margin: 5px;
+  border: none;
+  background-color: transparent;
+}
+
+#outer-box {
+  margin: 5px;
+  border: none;
+  background-color: transparent;
+}
+
+#scroll {
+  margin: 0px;
+  border: none;
+}
+
+#text {
+  margin: 5px;
+  border: none;
+  color: @subtext0;    /* Waybar's subtext0 (inactive) */
+}
+
+#entry {
+  border: none;
+  color: @text;
+  padding: 3px;
+}
+
+#entry:focus {
+  border: none;
+}
+
+#entry:selected {
+  background-color: @highlight;  /* Waybar's highlight color */
+  border-radius: 5px;
+  border: none;
+}

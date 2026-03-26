@@ -1,0 +1,91 @@
+prefer-no-csd
+
+input {
+    keyboard {
+        xkb {
+            layout "us,se"
+            options "grp:alt_shift_toggle"
+        }
+        repeat-delay 200
+        repeat-rate 35
+    }
+}
+
+layout {
+    gaps 0
+    center-focused-column "never"
+    preset-column-widths {
+        proportion 1.0
+        proportion 0.5
+    }
+    focus-ring {
+        width 0.0
+        active-color "#ffffff"
+        inactive-color "#000000"
+    }
+    border {
+        off
+    }
+}
+
+binds {
+    Alt+Tab { toggle-overview; }
+    Alt+T { spawn "alacritty"; }
+    Alt+E { spawn "thunar"; }
+    Alt+R { spawn "rofi" "-show-icons" "-show" "drun"; }
+    Alt+C { close-window; }
+    Alt+Return { maximize-column; }
+    Alt+V { toggle-window-floating; }
+    Alt+F { switch-preset-column-width; }
+
+    Alt+H { focus-column-left; }
+    Alt+L { focus-column-right; }
+    Alt+J { focus-workspace-down; }
+    Alt+K { focus-workspace-up; }
+
+    Alt+Shift+H { focus-column-left-or-last; }
+    Alt+Shift+L { focus-column-right-or-first; }
+    Alt+Shift+J { focus-window-down; }
+    Alt+Shift+K { focus-window-up; }
+
+    Ctrl+Alt+H { move-column-left; }
+    Ctrl+Alt+L { move-column-right; }
+    Ctrl+Alt+J { move-column-to-workspace-down; }
+    Ctrl+Alt+K { move-column-to-workspace-up; }
+
+    Alt+1 { focus-workspace 1; }
+    Alt+2 { focus-workspace 2; }
+    Alt+3 { focus-workspace 3; }
+    Alt+4 { focus-workspace 4; }
+    Alt+5 { focus-workspace 5; }
+    Alt+6 { focus-workspace 6; }
+    Alt+7 { focus-workspace 7; }
+    Alt+8 { focus-workspace 8; }
+    Alt+9 { focus-workspace 9; }
+
+    Ctrl+Alt+1 { move-column-to-workspace 1; }
+    Ctrl+Alt+2 { move-column-to-workspace 2; }
+    Ctrl+Alt+3 { move-column-to-workspace 3; }
+    Ctrl+Alt+4 { move-column-to-workspace 4; }
+    Ctrl+Alt+5 { move-column-to-workspace 5; }
+    Ctrl+Alt+6 { move-column-to-workspace 6; }
+    Ctrl+Alt+7 { move-column-to-workspace 7; }
+    Ctrl+Alt+8 { move-column-to-workspace 8; }
+    Ctrl+Alt+9 { move-column-to-workspace 9; }
+
+    Alt+WheelScrollDown { focus-workspace-down; }
+    Alt+WheelScrollUp { focus-workspace-up; }
+
+    Print { screenshot; }
+    Alt+B { spawn "pkill waybar; waybar"; }
+    Super+L { spawn "swaylock -i ~/wallpapers/wall.jpg -m fill"; }
+}
+
+workspace "1"
+workspace "2"
+workspace "3"
+workspace "4"
+
+spawn-sh-at-startup "swaybg -i ~/wallpapers/wall.jpg -m fill"
+spawn-at-startup "waybar"
+spawn-at-startup "mako"

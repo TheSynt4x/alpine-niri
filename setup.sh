@@ -32,8 +32,11 @@ mesa-gl
 wayland
 libxkbcommon
 
+nix
+shadow
+
 niri
-rofi-wayland
+wofi
 seatd
 shadow
 shadow-login
@@ -49,6 +52,12 @@ swaylock
 firefox
 pulseaudio
 pavucontrol
+
+zsh
+docker
+docker-compose
+nodejs
+git
 EOF
 
 apk update
@@ -106,110 +115,62 @@ if [ -z "\$XDG_RUNTIME_DIR" ]; then
 fi
 export TERMINAL=alacritty
 export EXPLORER=thunar
+export NIXPKGS_ALLOW_UNFREE=1
 EOF
 
 chown ${SUSER}: /home/${SUSER}/.profile
 
-# Setup Niri Config Directory
-mkdir -p /home/${SUSER}/.config/niri
+# Dotfiles from repository (run setup.sh from the repo root, e.g. ./setup.sh)
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 
-# Create minimal config.kdl
-cat << EOF > /home/${SUSER}/.config/niri/config.kdl
-prefer-no-csd
+if [ -d "${SCRIPT_DIR}/.config" ]; then
+  mkdir -p "/home/${SUSER}/.config"
+  cp -a "${SCRIPT_DIR}/.config/." "/home/${SUSER}/.config/"
+  chown -R "${SUSER}:" "/home/${SUSER}/.config"
+else
+  echo "Warning: ${SCRIPT_DIR}/.config not found; skipping dotfiles copy."
+fi
 
-input {
-    keyboard {
-        xkb {
-            layout "us,se"
-            options "grp:alt_shift_toggle"
-        }
-        repeat-delay 200
-        repeat-rate 35
-    }
-}
+if [ -d "${SCRIPT_DIR}/wallpapers" ]; then
+  cp -a "${SCRIPT_DIR}/wallpapers" "/home/${SUSER}/"
+  chown -R "${SUSER}:" "/home/${SUSER}/wallpapers"
+else
+  echo "Warning: ${SCRIPT_DIR}/wallpapers not found; skipping wallpapers copy."
+fi
 
-layout {
-    gaps 0
-    center-focused-column "never"
-    preset-column-widths {
-        proportion 1.0
-        proportion 0.5
-    }
-    focus-ring {
-        width 0.0
-        active-color "#ffffff"
-        inactive-color "#000000"
-    }
-    border {
-        off
-    }
-}
+# Install Nix package
+apk add --no-cache nix shadow
 
-binds {
-    Alt+Tab { toggle-overview; }
-    Alt+T { spawn "alacritty"; }
-    Alt+E { spawn "thunar"; }
-    Alt+R { spawn "rofi" "-show-icons" "-show" "drun"; }
-    Alt+C { close-window; }
-    Alt+Return { maximize-column; }
-    Alt+V { toggle-window-floating; }
-    Alt+F { switch-preset-column-width; }
+usermod -aG nix $SUSER
 
-    Alt+H { focus-column-left; }
-    Alt+L { focus-column-right; }
-    Alt+J { focus-workspace-down; }
-    Alt+K { focus-workspace-up; }
-
-    Alt+Shift+H { focus-column-left-or-last; }
-    Alt+Shift+L { focus-column-right-or-first; }
-    Alt+Shift+J { focus-window-down; }
-    Alt+Shift+K { focus-window-up; }
-
-    Ctrl+Alt+H { move-column-left; }
-    Ctrl+Alt+L { move-column-right; }
-    Ctrl+Alt+J { move-column-to-workspace-down; }
-    Ctrl+Alt+K { move-column-to-workspace-up; }
-
-    Alt+1 { focus-workspace 1; }
-    Alt+2 { focus-workspace 2; }
-    Alt+3 { focus-workspace 3; }
-    Alt+4 { focus-workspace 4; }
-    Alt+5 { focus-workspace 5; }
-    Alt+6 { focus-workspace 6; }
-    Alt+7 { focus-workspace 7; }
-    Alt+8 { focus-workspace 8; }
-    Alt+9 { focus-workspace 9; }
-
-    Ctrl+Alt+1 { move-column-to-workspace 1; }
-    Ctrl+Alt+2 { move-column-to-workspace 2; }
-    Ctrl+Alt+3 { move-column-to-workspace 3; }
-    Ctrl+Alt+4 { move-column-to-workspace 4; }
-    Ctrl+Alt+5 { move-column-to-workspace 5; }
-    Ctrl+Alt+6 { move-column-to-workspace 6; }
-    Ctrl+Alt+7 { move-column-to-workspace 7; }
-    Ctrl+Alt+8 { move-column-to-workspace 8; }
-    Ctrl+Alt+9 { move-column-to-workspace 9; }
-
-    Alt+WheelScrollDown { focus-workspace-down; }
-    Alt+WheelScrollUp { focus-workspace-up; }
-
-    Print { screenshot; }
-    Alt+B { spawn "pkill waybar; waybar"; }
-    Super+L { spawn "swaylock"; }
-}
-
-workspace "1"
-workspace "2"
-workspace "3"
-workspace "4"
-
-spawn-at-startup "waybar"
-spawn-at-startup "mako"
+# Configure Nix for flakes
+cat <<EOF > /etc/nix/nix.conf
+allowed-users = @nix
+build-users-group = nixbld
+max-jobs = 4
+extra-experimental-features = nix-command flakes
 EOF
 
-chown -R ${SUSER}: /home/${SUSER}/.config/niri
+# Enable nix-daemon on boot
+rc-update add nix-daemon
+rc-service nix-daemon restart
 
-# TODO: setup nix package manager
+nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
+
+# zsh setup
+chsh -s /bin/zsh $SUSER
+
+# install oh-my-zsh
+sh -c "$(wget -O- https://install.ohmyz.sh/)"
+
+# install zsh plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+sed -i 's/plugins=(git)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' /home/${SUSER}/.zshrc
+
+rc-update add docker default
+rc-service docker start
 
 echo "Setup done. Rebooting."
 sleep 3
