@@ -20,12 +20,13 @@ font-dejavu
 font-jetbrains-mono-nerd
 adwaita-icon-theme
 hicolor-icon-theme
-alacritty
+curl
 greetd
 greetd-agreety
 linux-firmware-other
 linux-lts
 linux-pam
+fontconfig
 
 mesa-dri-gallium
 mesa-egl
@@ -39,6 +40,7 @@ nix
 shadow
 
 niri
+alacritty
 wofi
 seatd
 shadow
@@ -176,8 +178,21 @@ su - ${SUSER} -c "git clone https://github.com/zsh-users/zsh-syntax-highlighting
 # Fix the .zshrc plugins line (running as root is fine here since we specify the path)
 sed -i 's/plugins=(git)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' /home/${SUSER}/.zshrc
 
+fc-cache -fv
+
 rc-update add docker default
 rc-service docker start
+
+# Force GTK to use the icons you installed
+mkdir -p /home/${SUSER}/.config/gtk-3.0
+cat << EOF > /home/${SUSER}/.config/gtk-3.0/settings.ini
+[Settings]
+gtk-icon-theme-name = Adwaita
+gtk-theme-name = Adwaita
+gtk-font-name = JetBrainsMono Nerd Font
+EOF
+
+chown -R ${SUSER}:${SUSER} /home/${SUSER}
 
 echo "Setup done. Rebooting."
 sleep 3
