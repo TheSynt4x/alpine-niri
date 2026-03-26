@@ -182,6 +182,9 @@ rc-service nix-daemon restart
 
 nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
 
+rm -rf /root/.oh-my-zsh/
+rm -rf /home/${SUSER}/.oh-my-zsh/
+
 # zsh setup
 chsh -s /bin/zsh $SUSER
 
