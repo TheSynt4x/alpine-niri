@@ -161,7 +161,7 @@ nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
 chsh -s /bin/zsh $SUSER
 
 # install oh-my-zsh
-sh -c "$(wget -O- https://install.ohmyz.sh/)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 # install zsh plugins
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
