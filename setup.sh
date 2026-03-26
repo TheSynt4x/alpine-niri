@@ -11,7 +11,7 @@ sed -i '/community/s/^#//g' /etc/apk/repositories
 # save old world
 cp /etc/apk/world /tmp/world
 
-# The Bare-Bones Package List
+# Added the missing essentials for Wayland/Mesa
 cat << EOF > /etc/apk/world
 alpine-base
 dbus
@@ -25,6 +25,9 @@ linux-lts
 linux-pam
 mesa-dri-gallium
 mesa-egl
+mesa-gbm
+mesa-gl
+libxkbcommon
 niri
 rofi-wayland
 seatd
