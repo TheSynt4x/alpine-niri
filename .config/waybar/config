@@ -59,17 +59,25 @@
       ]
     },
     "network": {
-      "format-wifi": "{icon}",
-      "format-ethernet": "󰈀",
-      "format-disconnected": "󰌙",
+      "format-wifi": "<span font='14px' rise='1500'>{icon}</span>",
+      "format-ethernet": "<span font='14px' rise='1500'>{icon}</span>",
+      "format-disconnected": "<span font='14px' rise='1500'>󰌙</span>",
       "format-icons": [
         "󰤯",
         "󰤟",
         "󰤢",
+        "󰤢",
         "󰤨"
       ],
-      "tooltip-format-wifi": "{essid} ({signalStrength}%)",
-      "on-click": "alacritty -e nmtui"
+      "states": {
+        "excellent": 80,
+        "good": 60,
+        "medium": 40,
+        "low": 20
+      },
+      "on-click": "alacritty -e nmtui",
+      "tooltip-format-wifi": "Signal Strength: {signalStrength}%",
+      "tooltip": true
     },
     "pulseaudio": {
       "format": "{icon} {volume}%",

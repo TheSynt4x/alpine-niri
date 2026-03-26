@@ -53,6 +53,7 @@ mako
 networkmanager
 networkmanager-wifi
 networkmanager-cli
+networkmanager-tui
 iwd
 iwgtk
 swaybg
