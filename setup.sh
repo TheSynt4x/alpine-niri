@@ -55,7 +55,6 @@ iwgtk
 swaybg
 swaylock
 firefox
-pulseaudio
 pavucontrol
 
 zsh
@@ -63,6 +62,12 @@ docker
 docker-compose
 nodejs
 git
+
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+pipewire
+pipewire-pulse
+wireplumber 
 EOF
 
 apk update
@@ -121,6 +126,21 @@ fi
 export TERMINAL=alacritty
 export EXPLORER=thunar
 export NIXPKGS_ALLOW_UNFREE=1
+
+export XDG_CURRENT_DESKTOP=niri
+export XDG_SESSION_TYPE=wayland
+export MOZ_ENABLE_WAYLAND=1
+export QT_QPA_PLATFORM=wayland
+
+if [ -z "\$USER_SERVICES_STARTED" ]; then
+    /usr/bin/pipewire &
+    sleep 1
+    /usr/bin/pipewire-pulse &
+    /usr/bin/wireplumber &
+    /usr/libexec/xdg-desktop-portal &
+    /usr/libexec/xdg-desktop-portal-wlr &
+    export USER_SERVICES_STARTED=1
+fi
 EOF
 
 chown ${SUSER}: /home/${SUSER}/.profile
