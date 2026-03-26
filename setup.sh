@@ -147,8 +147,8 @@ layout {
 
 binds {
     Alt+Tab { toggle-overview; }
-    Alt+T { spawn "$TERMINAL"; }
-    Alt+E { spawn "$EXPLORER"; }
+    Alt+T { spawn "alacritty"; }
+    Alt+E { spawn "thunar"; }
     Alt+R { spawn "rofi" "-show-icons" "-show" "drun"; }
     Alt+C { close-window; }
     Alt+Return { maximize-column; }
