@@ -75,7 +75,7 @@
         "medium": 40,
         "low": 20
       },
-      "on-click": "alacritty -e nmtui",
+      "on-click": "networkmanager_dmenu",
       "tooltip-format-wifi": "Signal Strength: {signalStrength}%",
       "tooltip": true
     },

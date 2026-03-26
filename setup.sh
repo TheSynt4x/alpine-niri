@@ -66,6 +66,7 @@ networkmanager
 networkmanager-wifi
 networkmanager-cli
 networkmanager-tui
+networkmanager-dmenu
 iwd
 iwgtk
 swaybg
