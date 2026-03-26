@@ -50,6 +50,9 @@ udev-init-scripts-openrc
 thunar
 waybar
 mako
+networkmanager
+networkmanager-wifi
+networkmanager-cli
 iwd
 iwgtk
 swaybg
@@ -86,6 +89,45 @@ if [ -z "$SUSER" ]; then
   echo "Error: No user with ID 1000 found. Please create a user first."
   exit 1
 fi
+
+if [ -f /etc/network/interfaces ]; then
+    cp /etc/network/interfaces /etc/network/interfaces.bak
+    echo -e "auto lo\niface lo inet loopback" > /etc/network/interfaces
+fi
+
+# Stop and disable the default networking service
+rc-service networking stop 2>/dev/null || true
+rc-update del networking default 2>/dev/null || true
+
+# --- 3. NetworkManager & iwd Configuration ---
+mkdir -p /etc/NetworkManager/conf.d
+
+# Main Config: Set dhcp=internal to ensure NM doesn't try to call external udhcpc
+cat << EOF > /etc/NetworkManager/NetworkManager.conf
+[main]
+dhcp=internal
+plugins=ifupdown,keyfile
+
+[ifupdown]
+managed=true
+
+[device]
+wifi.backend=iwd
+wifi.iwd.autoconnect=yes
+EOF
+
+# Allow the user to manage networks without sudo
+cat << EOF > /etc/NetworkManager/conf.d/any-user.conf
+[main]
+auth-polkit=false
+EOF
+
+# --- 4. Final Service & Group setup ---
+addgroup ${SUSER} plugdev || true
+addgroup ${SUSER} netdev || true
+
+rc-update add iwd default
+rc-update add networkmanager default
 
 # setup services
 setup-devd udev
@@ -154,9 +196,6 @@ else
   echo "Warning: ${SCRIPT_DIR}/wallpapers not found; skipping wallpapers copy."
 fi
 
-# Install Nix package
-apk add --no-cache nix shadow
-
 usermod -aG nix $SUSER
 
 # Configure Nix for flakes
@@ -190,12 +229,18 @@ su - ${SUSER} -c "git clone https://github.com/zsh-users/zsh-autosuggestions ${Z
 su - ${SUSER} -c "git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM_DIR}/plugins/zsh-syntax-highlighting"
 
 # Fix the .zshrc plugins line (running as root is fine here since we specify the path)
-sed -i 's/plugins=(git)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' /home/${SUSER}/.zshrc
+sed -i 's/plugins=(.*)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' /home/${SUSER}/.zshrc
 
 fc-cache -fv
 
 rc-update add docker default
 rc-service docker start
+
+mkdir -p /etc/iwd
+cat << EOF > /etc/iwd/main.conf
+[General]
+EnableNetworkConfiguration=false
+EOF
 
 # Force GTK to use the icons you installed
 mkdir -p /home/${SUSER}/.config/gtk-3.0

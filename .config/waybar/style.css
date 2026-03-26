@@ -1,324 +1,115 @@
-/* Base Colors - Mocha Inspired - Adjusted for Consistency */
-@define-color base rgba(25, 25, 25, 0.75); /* Slightly darker base for better contrast */
-@define-color surface0 rgba(35, 35, 35, 0.9);
-@define-color surface1 rgba(45, 45, 45, 0.7); /* Darker surface for better differentiation */
-@define-color surface2 rgba(60, 60, 60, 0.6); /* Made darker for more visible hover effects */
-@define-color text rgba(230, 230, 230, 1); /* Slightly softer white for text */
-@define-color subtext0 rgba(180, 180, 180, 0.5); /* Adjusted subtext for better readability */
-@define-color overlay0 rgba(255, 255, 255, 0.1);
-@define-color border rgba(80, 80, 80, 0.25);    /* A more visible border */
-@define-color lavender rgba(140, 140, 255, 0.8); /* A softer lavender */
+/* Color Palette */
+@define-color base rgba(25, 25, 25, 0.85);
+@define-color surface rgba(45, 45, 45, 0.9);
+@define-color text #e6e6e6;
+@define-color rosewater #f5e0dc;
+@define-color flamingo #f2cdcd;
+@define-color maroon #eba0ac;
+@define-color yellow #f9e2af;
+@define-color green #a6e3a1;
+@define-color sapphire #74c7ec;
+@define-color sky #89dceb;
+@define-color lavender #b4befe;
 
-/* Accent Colors - Enhanced Palette */
-@define-color rosewater rgba(250, 255, 255, 0.8);   /* Light Coral */
-@define-color flamingo rgba(240, 128, 128, 1);    /* Coral */
-@define-color maroon rgba(205, 92, 92, 1);       /* Indian Red */
-@define-color yellow rgba(255, 215, 0, 0.9);      /* Gold */
-@define-color green rgba(144, 238, 144, 1);      /* Light Green */
-@define-color sapphire rgba(65, 105, 225, 1);     /* Royal Blue */
-@define-color sky rgba(135, 206, 235, 1);        /* Sky Blue */
-
-/* Global Styles */
 * {
-  text-shadow: none;
-  box-shadow: none;
-  border: none;
-  border-radius: 5px;
-  font-family: "JetBrainsMono Nerd Font", "Ubuntu", "Font Awesome", sans-serif;
-  font-weight: 600;
+  font-family: "JetBrainsMono Nerd Font", sans-serif;
   font-size: 14px;
-  margin: 0;
-  padding: 0;
+  font-weight: bold;
+  border: none;
+  border-radius: 0;
 }
 
-/* Waybar Window */
 window#waybar {
-  background-color: rgba(0, 0, 0, 0);
-  transition-property: background-color;
-  transition-duration: 0.5s;
-  color: @text;
+  background: transparent;
 }
 
-/* Tooltip */
-tooltip {
-  background: @surface1;
-  border-radius: 5px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: @border;
-}
-
-tooltip label {
-  color: @text;
-}
-
-window#waybar.top .modules-right,
-window#waybar.top .modules-left,
-window#waybar.top .modules-center {
-  background: @base;
-  border-radius: 10px;
-  padding: 0 10px;
-  margin: 3px;
-}
-
-/* Modules Left/Right Styling */
-.modules-left {
-  padding: 0 5px;
-}
-
+/* Island Containers */
+.modules-left,
+.modules-center,
 .modules-right {
-  padding: 0 5px;
+  background: @base;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2px 12px;
 }
 
-/* Custom OS Button */
-#custom-os_button {
-  font-family: "JetBrainsMono Nerd Font";
-  font-size: 20px;
-  padding-left: 10px;
-  padding-right: 15px;
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+/* Individual Module Spacing */
+#workspaces,
+#window,
+#disk,
+#cpu,
+#memory,
+#backlight,
+#network,
+#pulseaudio,
+#battery,
+#language,
+#clock {
+  margin: 0 6px;
 }
 
-#custom-os_button:hover {
-  background-color: @surface2;
-  color: @text;
-}
-
-/* Workspaces */
-#workspaces {
-  padding: 2px;
-  margin: 3px;
-}
-
+/* Workspaces Styling */
 #workspaces button {
-  padding: 0 5px;
-  background-color: transparent;
   color: @text;
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-  border-radius: 5px;
-  margin: 2px;
-}
-
-#workspaces button:hover {
-  background: rgba(0, 0, 0, 0.2);
-  border-bottom: 3px solid @rosewater;
+  padding: 0 4px;
 }
 
 #workspaces button.active {
-  background-color: @surface2;
-  border-bottom: 3px solid @rosewater;
+  color: @rosewater;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
 }
 
-#workspaces button.focused {
-  background-color: @surface2;
-  box-shadow: inset 0 -3px @rosewater;
-}
-
-#workspaces button.urgent {
-  background-color: @flamingo;
-  color: @base;
-}
-
-/* Taskbar */
-#taskbar {
-  padding: 1px;
-  margin: 3px;
-}
-
-#taskbar button {
-  min-width: 100px;
-  padding: 6px;
-  margin: 3px;
-  color: @text;
-  border-radius: 10px;
-  background: @base;
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-#taskbar button.active {
-  border-bottom: 3px solid @rosewater;
-  background: @surface1;
-}
-
-#taskbar button:hover {
-  background-color: @surface2;
+/* Module Specific Colors (Matching the Image) */
+#disk {
   color: @text;
 }
 
-/* CPU, Disk, Memory */
-#cpu,
-#disk,
+#cpu {
+  color: @maroon;
+}
+
 #memory {
-  padding: 4px;
-  margin: 3px;
-  color: @text;
+  color: @sky;
 }
 
-/* Tray */
-#tray {
-  margin-left: 3px;
-  margin-right: 3px;
-}
-
-#tray > .passive {
-  border-bottom: none;
-}
-
-#tray > .active {
-  border-bottom: 3px solid @rosewater;
-}
-
-#tray > .needs-attention {
-  border-bottom: 3px solid @yellow;
-}
-
-#tray > widget {
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-#tray > widget:hover {
-  background-color: @surface2;
-}
-
-/* Pulseaudio */
-#pulseaudio {
-  font-family: "JetBrainsMono Nerd Font";
-  padding: 0 10px;
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-  color: @green;
-}
-
-#pulseaudio:hover {
-  background-color: @surface2;
-}
-
-#pulseaudio.muted {
-  color: @subtext0;
-}
-
-/* Network */
-#network {
-  padding: 0 10px;
-  margin: 3px;
-  color: @green;
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-#network:hover {
-  background-color: @surface2;
-}
-
-#network.excellent {
-  color: @green;
-}
-
-#network.good {
-  color: @green;
-}
-
-#network.medium {
+#backlight {
   color: @yellow;
 }
 
-#network.low {
-  color: @flamingo;
+#network {
+  color: @lavender;
 }
 
-#network.disconnected {
-  color: @subtext0;
-}
-
-/* Battery */
-#battery {
-  padding: 4px;
-  margin: 3px;
+#pulseaudio {
   color: @green;
 }
 
-#battery:hover {
-  background-color: @surface2;
-}
-
-#battery.charging,
-#battery.plugged {
+#battery {
   color: @sapphire;
 }
 
+#clock {
+  color: @rosewater;
+}
+
+#custom-power-menu {
+  color: @flamingo;
+  margin-left: 8px;
+}
+
+/* Critical/Warning Battery */
 #battery.warning {
   color: @yellow;
 }
 
 #battery.critical:not(.charging) {
-  background-color: @flamingo;
-  color: @base;
-  animation-name: blink;
-  animation-duration: 0.5s;
-  animation-timing-function: steps(12);
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
+  color: #ff0000;
+  animation: blink 0.5s linear infinite alternate;
 }
 
 @keyframes blink {
   to {
-    color: #000000;
+    opacity: 0.5;
   }
 }
-
-/* Clock */
-#clock {
-  padding: 0 10px;
-  margin: 3px;
-  color: @text;
-}
-
-#clock:hover {
-  background-color: @surface2;
-}
-
-#window {
-  color: @text;
-}
-
-#language {
-	margin: 3px;
-	padding: 4px;
-}
-
-#custom-power-menu {
-  margin: 3px;
-  padding: 4px;
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-/* Standardize hover effects across all interactive elements */
-#custom-os_button:hover,
-#workspaces button:hover,
-#taskbar button:hover,
-#tray > widget:hover,
-#pulseaudio:hover,
-#cpu:hover,
-#memory:hover,
-#network:hover,
-#battery:hover,
-#clock:hover,
-#pulseaudio:hover,
-#power-profiles-daemon:hover,
-#custom-power-menu:hover,
-#language:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-#power-profiles-daemon {
-  margin: 3px;
-  padding: 4px;
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-  color: @text;
-}
-
-#power-profiles-daemon:hover {
-  background-color: @surface2;
-}
-
-/* Remove individual hover definitions from existing elements */
-/* Note: Keep special hover states like workspaces active/focused */
