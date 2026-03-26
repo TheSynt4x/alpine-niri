@@ -39,6 +39,7 @@ linux-firmware-other
 linux-lts
 linux-pam
 fontconfig
+doas
 
 mesa-dri-gallium
 mesa-egl
@@ -73,6 +74,7 @@ swaybg
 swaylock
 firefox
 pavucontrol
+fastfetch
 
 zsh
 docker
@@ -119,6 +121,21 @@ adduser greetd video
 adduser ${SUSER} netdev
 rc-update add iwd default
 
+echo "permit keepenv :wheel" > /etc/apk/doas.conf
+addgroup "$SUSER" wheel || true
+
+for TARGET in "/home/$SUSER" "/root"; do
+    # Add to .profile
+    echo "alias sudo='doas'" >> "$TARGET/.profile"
+    echo "alias nano='micro'" >> "$TARGET/.profile"
+    
+    # Add to .zshrc (if it exists)
+    if [ -f "$TARGET/.zshrc" ]; then
+        echo "alias sudo='doas'" >> "$TARGET/.zshrc"
+        echo "alias nano='micro'" >> "$TARGET/.zshrc"
+    fi
+done
+
 # config greetd
 cat << EOF > /etc/conf.d/greetd
 rc_need=seatd
@@ -142,15 +159,23 @@ if [ -z "\$XDG_RUNTIME_DIR" ]; then
   mkdir -pm 0700 \$XDG_RUNTIME_DIR
   export XDG_RUNTIME_DIR
 fi
+
+# Environment variables
 export TERMINAL=alacritty
 export EXPLORER=thunar
 
+# Desktop environment
 export XDG_CURRENT_DESKTOP=niri
 export XDG_SESSION_TYPE=wayland
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM=wayland
 
+# Nix
 export NIXPKGS_ALLOW_UNFREE=1
+
+# Aliases
+alias sudo='doas'
+alias nano='micro'
 EOF
 
 chown ${SUSER}: /home/${SUSER}/.profile
