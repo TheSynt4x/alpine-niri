@@ -119,6 +119,6 @@ window#waybar {
 .modules-left { margin-left: 5px; }
 .modules-right { margin-right: 5px; }
 
-window#waybar.empty {
+window#waybar.empty #window {
   opacity: 0;
 }
