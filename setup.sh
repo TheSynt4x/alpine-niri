@@ -24,7 +24,6 @@ linux-firmware-other
 linux-lts
 linux-pam
 # Critical for VM acceleration:
-mesa-dri-virtio
 mesa-dri-gallium
 mesa-egl
 mesa-gbm
@@ -32,6 +31,7 @@ mesa-gl
 # Essential Wayland libs:
 wayland
 libxkbcommon
+# Desktop Environment
 niri
 rofi-wayland
 seatd
