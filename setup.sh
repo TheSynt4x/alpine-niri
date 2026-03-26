@@ -6,13 +6,25 @@ echo "Installing the absolute bare minimum for Niri..."
 echo "To continue press RETURN, to abort Ctrl-c"
 read n
 
-sed -i '/community/s/^#//g' /etc/apk/repositories
+# --- 1. Reliable Repository Setup ---
+VERSION_ID=$(cut -d. -f1,2 /etc/alpine-release)
+REPO_URL="https://dl-cdn.alpinelinux.org/alpine"
 
+cat << EOF > /etc/apk/repositories
+$REPO_URL/v$VERSION_ID/main
+$REPO_URL/v$VERSION_ID/community
+$REPO_URL/edge/testing
+$REPO_URL/edge/main
+$REPO_URL/edge/community
+EOF
+
+apk update
 # save old world
 cp /etc/apk/world /tmp/world
 
 # Added the missing essentials for Wayland/Mesa
 cat << EOF > /etc/apk/world
+tzdata
 alpine-base
 dbus
 eudev
@@ -81,6 +93,8 @@ apk upgrade
 while read pkg; do
   apk add "$pkg"
 done < /tmp/world
+
+setup-timezone -z Europe/Stockholm
 
 # Find user with id 1000
 SUSER=$(awk -F: '$3 == 1000 {print $1}' /etc/passwd)
@@ -177,21 +191,44 @@ nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
 rm -rf /root/.oh-my-zsh/
 rm -rf /home/${SUSER}/.oh-my-zsh/
 
-# zsh setup
+# --- Safe Zsh Setup (No Nuking) ---
 chsh -s /bin/zsh $SUSER
+chsh -s /bin/zsh root
 
-# Define the custom plugin path for clarity
-ZSH_CUSTOM_DIR="/home/${SUSER}/.oh-my-zsh/custom"
+# Function to install OMZ and plugins for a specific user
+setup_zsh_for_user() {
+    local target_user=$1
+    local target_home=$2
+    local z_dir="$target_home/.oh-my-zsh"
+    local c_dir="$z_dir/custom"
 
-# Install OMZ as the user
-su - ${SUSER} -c "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
+    # 1. Install OMZ if missing
+    if [ ! -d "$z_dir" ]; then
+        echo "Installing Oh My Zsh for $target_user..."
+        su - ${target_user} -c "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
+    else
+        echo "Oh My Zsh already exists for $target_user, skipping..."
+    fi
 
-# Install plugins as the user
-su - ${SUSER} -c "git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM_DIR}/plugins/zsh-autosuggestions"
-su - ${SUSER} -c "git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM_DIR}/plugins/zsh-syntax-highlighting"
+    # 2. Plugins (Clone if missing, Pull if exists)
+    for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
+        local plugin_dir="$c_dir/plugins/$plugin"
+        if [ ! -d "$plugin_dir" ]; then
+            su - ${target_user} -c "git clone https://github.com/zsh-users/$plugin $plugin_dir"
+        else
+            su - ${target_user} -c "cd $plugin_dir && git pull"
+        fi
+    done
 
-# Fix the .zshrc plugins line (running as root is fine here since we specify the path)
-sed -i 's/plugins=(.*)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' /home/${SUSER}/.zshrc
+    # 3. Fix .zshrc plugins line
+    sed -i 's/plugins=(.*)/plugins=(git docker zsh-autosuggestions zsh-syntax-highlighting)/' "$target_home/.zshrc"
+}
+
+# Run for the user
+setup_zsh_for_user "${SUSER}" "/home/${SUSER}"
+
+# Run for root (so root doesn't complain)
+setup_zsh_for_user "root" "/root"
 
 fc-cache -fv
 
