@@ -28,16 +28,12 @@
       "custom/power-menu"
     ],
     "niri/workspaces": {
-      "format": "{index} {icon}",
+      "format": "{index}",
       "active-only": false,
       "all-outputs": true
     },
     "niri/window": {
-      "max-length": 30,
-      "format": "{}",
-      "rewrite": {
-        "(.*)": "Babaji"
-      }
+      "max-length": 30
     },
     "disk": {
       "interval": 30,
