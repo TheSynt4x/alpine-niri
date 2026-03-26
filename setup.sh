@@ -90,45 +90,6 @@ if [ -z "$SUSER" ]; then
   exit 1
 fi
 
-if [ -f /etc/network/interfaces ]; then
-    cp /etc/network/interfaces /etc/network/interfaces.bak
-    echo -e "auto lo\niface lo inet loopback" > /etc/network/interfaces
-fi
-
-# Stop and disable the default networking service
-rc-service networking stop 2>/dev/null || true
-rc-update del networking default 2>/dev/null || true
-
-# --- 3. NetworkManager & iwd Configuration ---
-mkdir -p /etc/NetworkManager/conf.d
-
-# Main Config: Set dhcp=internal to ensure NM doesn't try to call external udhcpc
-cat << EOF > /etc/NetworkManager/NetworkManager.conf
-[main]
-dhcp=internal
-plugins=ifupdown,keyfile
-
-[ifupdown]
-managed=true
-
-[device]
-wifi.backend=iwd
-wifi.iwd.autoconnect=yes
-EOF
-
-# Allow the user to manage networks without sudo
-cat << EOF > /etc/NetworkManager/conf.d/any-user.conf
-[main]
-auth-polkit=false
-EOF
-
-# --- 4. Final Service & Group setup ---
-addgroup ${SUSER} plugdev || true
-addgroup ${SUSER} netdev || true
-
-rc-update add iwd default
-rc-update add networkmanager default
-
 # setup services
 setup-devd udev
 rc-update add seatd
@@ -236,11 +197,41 @@ fc-cache -fv
 rc-update add docker default
 rc-service docker start
 
+# --- THE NETWORK SWITCH (Last step before reboot) ---
+echo "Configuring NetworkManager and disabling old stack..."
+
+# 1. Config NM
+mkdir -p /etc/NetworkManager/conf.d
+cat << EOF > /etc/NetworkManager/NetworkManager.conf
+[main]
+dhcp=internal
+plugins=ifupdown,keyfile
+[ifupdown]
+managed=true
+[device]
+wifi.backend=iwd
+wifi.iwd.autoconnect=yes
+EOF
+
+# 2. Config iwd
 mkdir -p /etc/iwd
 cat << EOF > /etc/iwd/main.conf
 [General]
 EnableNetworkConfiguration=false
 EOF
+
+# 3. Clean up interfaces
+if [ -f /etc/network/interfaces ]; then
+    echo -e "auto lo\niface lo inet loopback" > /etc/network/interfaces
+fi
+
+# 4. Enable/Disable Services
+addgroup ${SUSER} netdev || true
+addgroup ${SUSER} plugdev || true
+
+rc-update add iwd default
+rc-update add networkmanager default
+rc-update del networking default 2>/dev/null || true
 
 # Force GTK to use the icons you installed
 mkdir -p /home/${SUSER}/.config/gtk-3.0
