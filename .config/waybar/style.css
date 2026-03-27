@@ -126,3 +126,23 @@ window#waybar {
 window#waybar.empty #window {
   opacity: 0;
 }
+
+#network.excellent {
+    color: @green;
+}
+
+#network.good {
+    color: @green;
+}
+
+#network.medium {
+    color: @yellow;
+}
+
+#network.low {
+    color: @flamingo;
+}
+
+#network.disconnected {
+    color: @subtext0;
+}
