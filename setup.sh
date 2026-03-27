@@ -28,10 +28,6 @@ tzdata
 alpine-base
 dbus
 eudev
-font-dejavu
-font-jetbrains-mono-nerd
-adwaita-icon-theme
-hicolor-icon-theme
 curl
 greetd
 greetd-agreety
@@ -40,6 +36,7 @@ linux-lts
 linux-pam
 fontconfig
 doas
+gcompat
 
 mesa-dri-gallium
 mesa-egl
@@ -76,6 +73,10 @@ firefox
 pavucontrol
 fastfetch
 micro
+font-dejavu
+font-jetbrains-mono-nerd
+adwaita-icon-theme
+hicolor-icon-theme
 
 zsh
 docker
@@ -153,33 +154,58 @@ EOF
 
 rc-update add greetd
 
-# Set XDG_RUNTIME_DIR
-cat << EOF > /home/${SUSER}/.profile
-if [ -z "\$XDG_RUNTIME_DIR" ]; then
-  XDG_RUNTIME_DIR="/tmp/${SUSERID}-runtime-dir"
-  mkdir -pm 0700 \$XDG_RUNTIME_DIR
-  export XDG_RUNTIME_DIR
-fi
+# --- Environment & Alias Setup Function ---
+setup_env_for_user() {
+  local target_user=$1
+  local target_home=$2
+  local target_uid=$(id -u "$target_user")
+  local profile_file="$target_home/.profile"
 
+  echo "Configuring environment for $target_user..."
+
+  # Create a clean .profile or append to it
+  cat << EOF > "$profile_file"
 # Environment variables
 export TERMINAL=alacritty
 export EXPLORER=thunar
-
-# Desktop environment
 export XDG_CURRENT_DESKTOP=niri
 export XDG_SESSION_TYPE=wayland
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM=wayland
 
-# Nix
+# Nix configuration
 export NIXPKGS_ALLOW_UNFREE=1
+
+# XDG Runtime Directory
+if [ -z "\$XDG_RUNTIME_DIR" ]; then
+  export XDG_RUNTIME_DIR="/tmp/${target_uid}-runtime-dir"
+  if [ ! -d "\$XDG_RUNTIME_DIR" ]; then
+    mkdir -pm 0700 "\$XDG_RUNTIME_DIR"
+    chown $target_user "\$XDG_RUNTIME_DIR"
+  fi
+fi
 
 # Aliases
 alias sudo='doas'
 alias nano='micro'
+alias vi='micro'
 EOF
 
-chown ${SUSER}: /home/${SUSER}/.profile
+  # Ensure ownership is correct
+  chown "${target_user}:" "$profile_file"
+  
+  # Also sync aliases to .zshrc if it exists (for interactive shells)
+  if [ -f "$target_home/.zshrc" ]; then
+    sed -i '/alias sudo=/d' "$target_home/.zshrc"
+    sed -i '/alias nano=/d' "$target_home/.zshrc"
+    echo "alias sudo='doas'" >> "$target_home/.zshrc"
+    echo "alias nano='micro'" >> "$target_home/.zshrc"
+  fi
+}
+
+# Run for the primary user and root
+setup_env_for_user "${SUSER}" "/home/${SUSER}"
+setup_env_for_user "root" "/root"
 
 # Dotfiles from repository (run setup.sh from the repo root, e.g. ./setup.sh)
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -214,6 +240,7 @@ rc-update add nix-daemon
 rc-service nix-daemon restart
 
 nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
+nix-channel --update
 
 # --- Safe Zsh Setup (No Nuking) ---
 chsh -s /bin/zsh $SUSER
@@ -228,20 +255,20 @@ setup_zsh_for_user() {
 
   # 1. Install OMZ if missing
   if [ ! -d "$z_dir" ]; then
-      echo "Installing Oh My Zsh for $target_user..."
-      su - ${target_user} -c "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
+    echo "Installing Oh My Zsh for $target_user..."
+    su - ${target_user} -c "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
   else
-      echo "Oh My Zsh already exists for $target_user, skipping..."
+    echo "Oh My Zsh already exists for $target_user, skipping..."
   fi
 
   # 2. Plugins (Clone if missing, Pull if exists)
   for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
-      local plugin_dir="$c_dir/plugins/$plugin"
-      if [ ! -d "$plugin_dir" ]; then
-          su - ${target_user} -c "git clone https://github.com/zsh-users/$plugin $plugin_dir"
-      else
-          su - ${target_user} -c "cd $plugin_dir && git pull"
-      fi
+    local plugin_dir="$c_dir/plugins/$plugin"
+    if [ ! -d "$plugin_dir" ]; then
+        su - ${target_user} -c "git clone https://github.com/zsh-users/$plugin $plugin_dir"
+    else
+        su - ${target_user} -c "cd $plugin_dir && git pull"
+    fi
   done
 
   # 3. Fix .zshrc plugins line
