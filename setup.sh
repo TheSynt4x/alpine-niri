@@ -163,6 +163,12 @@ setup_env_for_user() {
 
   echo "Configuring environment for $target_user..."
 
+  # Create permanent Nix config (This fixes the screenshot error)
+  mkdir -p "$target_home/.config/nixpkgs"
+  cat << EOF > "$target_home/.config/nixpkgs/config.nix"
+{ allowUnfree = true; }
+EOF
+
   # Create or overwrite .profile
   cat << EOF > "$profile_file"
 # XDG Runtime Directory
