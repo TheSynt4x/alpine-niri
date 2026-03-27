@@ -64,10 +64,12 @@ window#waybar {
 #workspaces button.active {
     background-color: @lavender;
     color: @base;
+    box-shadow: 0 0 5px rgba(180, 190, 254, 0.3);
 }
 
 #workspaces button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.08);
+    color: @text;
 }
 
 /* --- Window Title --- */
@@ -101,7 +103,9 @@ window#waybar {
 #pulseaudio:hover, 
 #battery:hover, 
 #clock:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: @lavender;
+    color: @base;
+    transform: translateY(-1px);
 }
 
 /* --- Battery States --- */
