@@ -154,7 +154,7 @@ EOF
 
 rc-update add greetd
 
-# --- Environment & Alias Setup Function ---
+# --- Environment & Alias Setup ---
 setup_env_for_user() {
   local target_user=$1
   local target_home=$2
@@ -163,19 +163,8 @@ setup_env_for_user() {
 
   echo "Configuring environment for $target_user..."
 
-  # Create a clean .profile or append to it
+  # Create or overwrite .profile
   cat << EOF > "$profile_file"
-# Environment variables
-export TERMINAL=alacritty
-export EXPLORER=thunar
-export XDG_CURRENT_DESKTOP=niri
-export XDG_SESSION_TYPE=wayland
-export MOZ_ENABLE_WAYLAND=1
-export QT_QPA_PLATFORM=wayland
-
-# Nix configuration
-export NIXPKGS_ALLOW_UNFREE=1
-
 # XDG Runtime Directory
 if [ -z "\$XDG_RUNTIME_DIR" ]; then
   export XDG_RUNTIME_DIR="/tmp/${target_uid}-runtime-dir"
@@ -185,25 +174,38 @@ if [ -z "\$XDG_RUNTIME_DIR" ]; then
   fi
 fi
 
+# Desktop & App Defaults
+export TERMINAL=alacritty
+export EXPLORER=thunar
+export XDG_CURRENT_DESKTOP=niri
+export XDG_SESSION_TYPE=wayland
+export MOZ_ENABLE_WAYLAND=1
+export QT_QPA_PLATFORM=wayland
+
+# Nix Permissions (Crucial for root doas/sudo)
+export NIXPKGS_ALLOW_UNFREE=1
+
 # Aliases
 alias sudo='doas'
 alias nano='micro'
 alias vi='micro'
 EOF
 
-  # Ensure ownership is correct
   chown "${target_user}:" "$profile_file"
-  
-  # Also sync aliases to .zshrc if it exists (for interactive shells)
+
+  # Sync to .zshrc if it exists (Ensures interactivity works)
   if [ -f "$target_home/.zshrc" ]; then
+    # Remove existing aliases if they exist to prevent duplicates
     sed -i '/alias sudo=/d' "$target_home/.zshrc"
     sed -i '/alias nano=/d' "$target_home/.zshrc"
+    
     echo "alias sudo='doas'" >> "$target_home/.zshrc"
     echo "alias nano='micro'" >> "$target_home/.zshrc"
+    echo "export NIXPKGS_ALLOW_UNFREE=1" >> "$target_home/.zshrc"
   fi
 }
 
-# Run for the primary user and root
+# Apply to your main user and root
 setup_env_for_user "${SUSER}" "/home/${SUSER}"
 setup_env_for_user "root" "/root"
 
