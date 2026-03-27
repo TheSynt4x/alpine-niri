@@ -30,7 +30,7 @@ dbus
 eudev
 curl
 greetd
-greetd-agreety
+tuigreet
 linux-firmware-other
 linux-lts
 linux-pam
@@ -139,6 +139,8 @@ for TARGET in "/home/$SUSER" "/root"; do
     fi
 done
 
+addgroup greetd tty || true
+
 # config greetd
 cat << EOF > /etc/conf.d/greetd
 rc_need=seatd
@@ -149,9 +151,13 @@ cat << EOF > /etc/greetd/config.toml
 vt = 7
 
 [default_session]
-command = "agreety --cmd 'env LIBSEAT_BACKEND=seatd dbus-run-session niri --session'"
+command = "tuigreet --remember --time --cmd 'env LIBSEAT_BACKEND=seatd dbus-run-session niri --session'"
 user = "greetd"
 EOF
+
+# 3. Create the cache directory so --remember actually works
+mkdir -p /var/cache/greetd
+chown greetd:greetd /var/cache/greetd
 
 rc-update add greetd
 
