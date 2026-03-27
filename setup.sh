@@ -30,7 +30,7 @@ dbus
 eudev
 curl
 greetd
-tuigreet
+greetd-tuigreet
 linux-firmware-other
 linux-lts
 linux-pam
