@@ -105,7 +105,6 @@ window#waybar {
 #clock:hover {
     background-color: @lavender;
     color: @base;
-    transform: translateY(-1px);
 }
 
 /* --- Battery States --- */
