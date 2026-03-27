@@ -84,6 +84,7 @@ docker-compose
 nodejs
 git
 
+xdg-utils
 xdg-desktop-portal
 xdg-desktop-portal-wlr
 pipewire

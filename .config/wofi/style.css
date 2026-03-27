@@ -5,7 +5,7 @@
 @define-color surface0 rgba(29, 31, 33, 0.9); /* Waybar surface0 */
 @define-color surface1 rgba(0, 0, 0, 0.7);    /* Waybar surface1 */
 @define-color text rgba(255, 255, 255, 0.9);                   /* Waybar text */
-@define-color subtext0 rgba(255, 255, 255, 1t); /* Waybar subtext0 */
+@define-color subtext0 rgba(255, 255, 255, 1); /* Waybar subtext0 */
 @define-color border rgba(255, 255, 255, 0.15);  /* Waybar border */
 @define-color highlight rgba(100, 100, 100, 0.3); /* Waybar surface2 */
 
