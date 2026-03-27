@@ -7,7 +7,7 @@ echo "To continue press RETURN, to abort Ctrl-c"
 read n
 
 # --- 1. Reliable Repository Setup ---
-VERSION_ID=$(cut -d. -f1,2 /etc/alpine-release)
+VERSION_ID="3.23"
 REPO_URL="https://dl-cdn.alpinelinux.org/alpine"
 
 cat << EOF > /etc/apk/repositories
