@@ -69,7 +69,8 @@ window#waybar {
 
 #workspaces button:hover {
     background-color: @lavender;
-    color: @text;
+    color: @base;
+    box-shadow: 0 0 5px rgba(180, 190, 254, 0.3);
 }
 
 /* --- Window Title --- */
