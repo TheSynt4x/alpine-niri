@@ -51,13 +51,12 @@ libxkbcommon
 
 nix
 shadow
+shadow-login
 
 niri
 alacritty
 wofi
 seatd
-shadow
-shadow-login
 udev-init-scripts
 udev-init-scripts-openrc
 nautilus
