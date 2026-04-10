@@ -40,7 +40,13 @@ gcompat
 tlp
 tlp-pd
 bluez
+bluez-openrc
 blueman
+cups
+cups-filters
+cups-openrc
+avahi
+avahi-openrc
 
 mesa-dri-gallium
 mesa-egl
@@ -91,6 +97,7 @@ xdg-desktop-portal
 xdg-desktop-portal-wlr
 pipewire
 pipewire-pulse
+pipewire-spa-bluez
 wireplumber
 EOF
 
@@ -120,6 +127,8 @@ rc-update add dbus
 adduser ${SUSER} seat
 adduser ${SUSER} video
 adduser ${SUSER} input
+adduser ${SUSER} lp
+adduser ${SUSER} lpadmin
 adduser greetd seat
 adduser greetd video
 
@@ -373,8 +382,15 @@ fc-cache -fv
 rc-update add docker default
 rc-service docker start
 
+rc-update add avahi-daemon default
+rc-service avahi-daemon start
+
+rc-update add cupsd default
+rc-service cupsd start
+
 rc-update add tlp default
 rc-update add bluetooth default
+rc-service bluetooth start
 
 # --- THE NETWORK SWITCH (Last step before reboot) ---
 echo "Configuring NetworkManager and disabling old stack..."
