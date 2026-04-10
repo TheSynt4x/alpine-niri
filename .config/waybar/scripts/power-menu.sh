@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-entries="⏾ Hibernate\nSuspend\n⭮ Reboot\n⏻ Shutdown"
+entries=$(printf '%s\n' "⏾ Hibernate" "Suspend" "⭮ Reboot" "⏻ Shutdown")
 
-selected=$(echo -e $entries | wofi --width 250 --height 210 --dmenu --cache-file /dev/null | awk '{print tolower($NF)}')
+selected=$(printf '%s\n' "$entries" | wofi --width 250 --height 210 --dmenu --cache-file /dev/null | awk '{print tolower($NF)}')
 
 case $selected in
   hibernate)
