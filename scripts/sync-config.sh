@@ -2,7 +2,11 @@
 
 set -e
 
-SCRIPT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+if [ -n "$1" ]; then
+  SOURCE_ROOT=$1
+else
+  SOURCE_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+fi
 
 SUSER=$(awk -F: '$3 == 1000 {print $1}' /etc/passwd)
 
@@ -12,7 +16,7 @@ if [ -z "$SUSER" ]; then
 fi
 
 TARGET_HOME="/home/${SUSER}"
-SOURCE_CONFIG="${SCRIPT_DIR}/.config"
+SOURCE_CONFIG="${SOURCE_ROOT}/.config"
 TARGET_CONFIG="${TARGET_HOME}/.config"
 
 if [ ! -d "$SOURCE_CONFIG" ]; then

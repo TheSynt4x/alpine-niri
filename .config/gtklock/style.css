@@ -39,6 +39,7 @@ window box > label:first-child {
     font-size: 72px;
     line-height: 1;
     padding-bottom: 8px;
+    color: @text;
 }
 
 entry {
