@@ -69,7 +69,6 @@ networkmanager-cli
 networkmanager-tui
 networkmanager-dmenu
 iwd
-iwgtk
 swaybg
 gtklock
 firefox
@@ -243,7 +242,11 @@ else
   echo "Warning: ${SCRIPT_DIR}/wallpapers not found; skipping wallpapers copy."
 fi
 
-usermod -aG nix $SUSER
+usermod -aG nix "$SUSER"
+
+find /root/.cache/nix -name "*.sqlite" -delete 2>/dev/null || true
+
+mkdir -p /etc/nix
 
 # Configure Nix for flakes
 cat <<EOF > /etc/nix/nix.conf
@@ -308,6 +311,16 @@ setup_zsh_for_user "${SUSER}" "/home/${SUSER}"
 
 # Run for root (so root doesn't complain)
 setup_zsh_for_user "root" "/root"
+
+# Install scripts from scripts/ directory
+for script in "${SCRIPT_DIR}/scripts/"*.sh; do
+    if [ -f "$script" ]; then
+        basename_script=$(basename "$script" .sh)
+        cp "$script" "/usr/local/bin/$basename_script"
+        chmod +x "/usr/local/bin/$basename_script"
+        echo "Installed $basename_script to /usr/local/bin/"
+    fi
+done
 
 fc-cache -fv
 
