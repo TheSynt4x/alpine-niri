@@ -1,7 +1,7 @@
 @define-color base rgba(18, 18, 18, 0.96);
 @define-color surface rgba(28, 28, 28, 0.98);
 @define-color surface2 rgba(40, 40, 40, 1);
-@define-color text #f2f2f2;
+@define-color text #ffffff;
 @define-color muted #b8b8b8;
 @define-color border rgba(255, 255, 255, 0.10);
 
