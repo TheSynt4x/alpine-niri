@@ -251,15 +251,13 @@ else
   echo "Warning: ${SCRIPT_DIR}/wallpapers not found; skipping wallpapers copy."
 fi
 
-usermod -aG nix "$SUSER"
-
 find /root/.cache/nix -name "*.sqlite" -delete 2>/dev/null || true
 
 mkdir -p /etc/nix
 
 # Configure Nix for flakes
 cat <<EOF > /etc/nix/nix.conf
-allowed-users = @nix
+allowed-users = root
 build-users-group = nixbld
 max-jobs = 4
 extra-experimental-features = nix-command flakes
