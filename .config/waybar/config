@@ -10,7 +10,7 @@
     "margin-right": 0,
     "height": 40,
     "modules-left": [
-      "custom/niri-workspaces",
+      "niri/workspaces",
       "niri/window"
     ],
     "modules-center": [
@@ -28,13 +28,13 @@
       "niri/language",
       "custom/power-menu"
     ],
+    "niri/workspaces": {
+      "format": "{index}",
+      "active-only": false,
+      "all-outputs": true
+    },
     "niri/window": {
       "max-length": 30
-    },
-    "custom/niri-workspaces": {
-      "exec": "~/.config/waybar/scripts/niri-workspaces.sh",
-      "return-type": "json",
-      "interval": 2
     },
     "disk": {
       "interval": 30,

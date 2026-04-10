@@ -23,7 +23,6 @@ window#waybar {
 }
 
 #workspaces,
-#custom-niri-workspaces,
 #window,
 #disk,
 #cpu,
@@ -46,11 +45,6 @@ window#waybar {
 #workspaces {
     background: transparent;
     padding: 0;
-}
-
-#custom-niri-workspaces {
-    background: transparent;
-    color: @text;
 }
 
 #workspaces button {
