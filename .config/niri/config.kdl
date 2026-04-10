@@ -31,7 +31,7 @@ layout {
 binds {
     Alt+Tab { toggle-overview; }
     Alt+T { spawn "alacritty"; }
-    Alt+E { spawn "thunar"; }
+    Alt+E { spawn "nautilus"; }
     Alt+R { spawn "wofi" "--show" "drun"; }
     Alt+C { close-window; }
     Alt+Return { maximize-column; }
