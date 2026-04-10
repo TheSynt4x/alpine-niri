@@ -6,7 +6,7 @@ selected=$(echo -e $entries | wofi --width 250 --height 210 --dmenu --cache-file
 
 case $selected in
   hibernate)
-    swaylock -i ~/wallpapers/wall.jpg -m fill &
+    gtklock &
     sleep 1
     systemctl hibernate;;
   suspend)

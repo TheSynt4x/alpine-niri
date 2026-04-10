@@ -78,7 +78,7 @@ binds {
 
     Print { screenshot; }
     Alt+B { spawn "pkill waybar; waybar"; }
-    Super+L { spawn "swaylock -i ~/wallpapers/wall.jpg -m fill"; }
+    Super+L { spawn "gtklock"; }
 }
 
 workspace "1"
@@ -93,6 +93,7 @@ spawn-at-startup "pipewire-pulse"
 spawn-at-startup "wireplumber"
 spawn-at-startup "/usr/libexec/xdg-desktop-portal-wlr"
 spawn-at-startup "/usr/libexec/xdg-desktop-portal"
+spawn-at-startup "tlp-pd"
 
 spawn-sh-at-startup "swaybg -i ~/wallpapers/wall.jpg -m fill"
 spawn-at-startup "waybar"

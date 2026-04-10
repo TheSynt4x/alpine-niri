@@ -37,6 +37,9 @@ linux-pam
 fontconfig
 doas
 gcompat
+tlp
+tlp-pd
+bluez
 
 mesa-dri-gallium
 mesa-egl
@@ -57,7 +60,7 @@ shadow
 shadow-login
 udev-init-scripts
 udev-init-scripts-openrc
-thunar
+nautilus
 waybar
 mako
 networkmanager
@@ -68,7 +71,7 @@ networkmanager-dmenu
 iwd
 iwgtk
 swaybg
-swaylock
+gtklock
 firefox
 pavucontrol
 fastfetch
@@ -189,7 +192,7 @@ fi
 
 # Desktop & App Defaults
 export TERMINAL=alacritty
-export EXPLORER=thunar
+export EXPLORER=nautilus
 export XDG_CURRENT_DESKTOP=niri
 export XDG_SESSION_TYPE=wayland
 export MOZ_ENABLE_WAYLAND=1
@@ -255,7 +258,9 @@ rc-update add nix-daemon
 rc-service nix-daemon restart
 
 nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
+nix-channel --add https://github.com/nix-community/nixGL/archive/main.tar.gz nixgl
 nix-channel --update
+nix-env -iA nixgl.auto.nixGLDefault
 
 # --- Safe Zsh Setup (No Nuking) ---
 chsh -s /bin/zsh $SUSER
@@ -274,6 +279,14 @@ setup_zsh_for_user() {
     su - ${target_user} -c "sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" \"\" --unattended"
   else
     echo "Oh My Zsh already exists for $target_user, skipping..."
+  fi
+
+  if [ -f "$target_home/.zsh_history" ]; then
+    echo "Fixing Zsh history for $target_user..."
+    mv "$target_home/.zsh_history" "$target_home/.zsh_history_bad"
+    strings "$target_home/.zsh_history_bad" > "$target_home/.zsh_history"
+    rm "$target_home/.zsh_history_bad"
+    chown "${target_user}:" "$target_home/.zsh_history"
   fi
 
   # 2. Plugins (Clone if missing, Pull if exists)
@@ -300,6 +313,9 @@ fc-cache -fv
 
 rc-update add docker default
 rc-service docker start
+
+rc-update add tlp default
+rc-update add bluetooth default
 
 # --- THE NETWORK SWITCH (Last step before reboot) ---
 echo "Configuring NetworkManager and disabling old stack..."
