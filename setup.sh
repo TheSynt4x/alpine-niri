@@ -95,6 +95,7 @@ docker
 docker-compose
 nodejs
 git
+jq
 
 xdg-utils
 xdg-desktop-portal
@@ -432,6 +433,10 @@ chown -R ${SUSER}:${SUSER} /home/${SUSER}
 
 if [ -f "/home/${SUSER}/.config/waybar/scripts/power-menu.sh" ]; then
     chmod +x /home/${SUSER}/.config/waybar/scripts/power-menu.sh
+fi
+
+if [ -f "/home/${SUSER}/.config/waybar/scripts/niri-workspaces.sh" ]; then
+    chmod +x "/home/${SUSER}/.config/waybar/scripts/niri-workspaces.sh"
 fi
 
 echo "Setup done. Rebooting."
