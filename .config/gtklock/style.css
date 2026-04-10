@@ -1,0 +1,78 @@
+@define-color base rgba(25, 25, 25, 0.72);
+@define-color surface rgba(45, 45, 45, 0.92);
+@define-color surface2 rgba(60, 60, 60, 0.96);
+@define-color text #e6e6e6;
+@define-color rosewater #f5e0dc;
+@define-color flamingo #f2cdcd;
+@define-color maroon #eba0ac;
+@define-color yellow #f9e2af;
+@define-color green #a6e3a1;
+@define-color sapphire #74c7ec;
+@define-color sky #89dceb;
+@define-color lavender #b4befe;
+
+* {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: @text;
+}
+
+window {
+    background-color: @base;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+box {
+    background: transparent;
+}
+
+entry,
+button,
+label {
+    border: none;
+    border-radius: 10px;
+}
+
+label {
+    background: transparent;
+}
+
+entry {
+    background-color: alpha(@surface, 0.90);
+    color: @text;
+    padding: 10px 14px;
+    min-width: 280px;
+    border: 1px solid alpha(@lavender, 0.25);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+entry:focus {
+    border-color: @lavender;
+    box-shadow: 0 0 0 2px alpha(@lavender, 0.20);
+}
+
+button {
+    background-color: @surface2;
+    color: @text;
+    padding: 10px 14px;
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover,
+button:focus {
+    background-color: @lavender;
+    color: @base;
+}
+
+button:active {
+    background-color: @sapphire;
+    color: @base;
+}
+
+/* Keep any time/date/module widgets visually aligned with the rest of the desktop. */
+label {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}

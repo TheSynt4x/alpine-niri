@@ -40,6 +40,7 @@ gcompat
 tlp
 tlp-pd
 bluez
+blueman
 
 mesa-dri-gallium
 mesa-egl
@@ -233,6 +234,14 @@ if [ -d "${SCRIPT_DIR}/.config" ]; then
   chown -R "${SUSER}:" "/home/${SUSER}/.config"
 else
   echo "Warning: ${SCRIPT_DIR}/.config not found; skipping dotfiles copy."
+fi
+
+if [ -f "/home/${SUSER}/.config/gtklock/config.ini" ]; then
+  sed -i "s|/home/user|/home/${SUSER}|g" "/home/${SUSER}/.config/gtklock/config.ini"
+fi
+
+if [ -f "/home/${SUSER}/.config/niri/scripts/startup.sh" ]; then
+  chmod +x "/home/${SUSER}/.config/niri/scripts/startup.sh"
 fi
 
 if [ -d "${SCRIPT_DIR}/wallpapers" ]; then

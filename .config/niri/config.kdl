@@ -86,15 +86,4 @@ workspace "2"
 workspace "3"
 workspace "4"
 
-spawn-at-startup "dbus-update-activation-environment" "--all"
-
-spawn-at-startup "pipewire"
-spawn-at-startup "pipewire-pulse"
-spawn-at-startup "wireplumber"
-spawn-at-startup "/usr/libexec/xdg-desktop-portal-wlr"
-spawn-at-startup "/usr/libexec/xdg-desktop-portal"
-spawn-at-startup "tlp-pd"
-
-spawn-sh-at-startup "swaybg -i ~/wallpapers/wall.jpg -m fill"
-spawn-at-startup "waybar"
-spawn-at-startup "mako"
+spawn-sh-at-startup "$HOME/.config/niri/scripts/startup.sh"
