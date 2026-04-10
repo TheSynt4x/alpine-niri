@@ -255,17 +255,22 @@ mkdir -p /etc/nix
 # Configure Nix for flakes
 cat <<EOF > /etc/nix/nix.conf
 allowed-users = root
+trusted-users = root
 build-users-group = nixbld
 max-jobs = 4
 extra-experimental-features = nix-command flakes
 EOF
 
-REAL_NIX=$(command -v nix)
-REAL_NIX_ENV=$(command -v nix-env)
-REAL_NIX_CHANNEL=$(command -v nix-channel)
-REAL_NIX_BUILD=$(command -v nix-build)
-REAL_NIX_SHELL=$(command -v nix-shell)
-REAL_NIX_STORE=$(command -v nix-store)
+resolve_system_bin() {
+  command -p -v "$1"
+}
+
+REAL_NIX=$(resolve_system_bin nix)
+REAL_NIX_ENV=$(resolve_system_bin nix-env)
+REAL_NIX_CHANNEL=$(resolve_system_bin nix-channel)
+REAL_NIX_BUILD=$(resolve_system_bin nix-build)
+REAL_NIX_SHELL=$(resolve_system_bin nix-shell)
+REAL_NIX_STORE=$(resolve_system_bin nix-store)
 
 install_nix_wrapper() {
   local name=$1
