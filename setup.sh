@@ -148,6 +148,7 @@ cat << EOF > /etc/conf.d/greetd
 rc_need=seatd
 EOF
 
+mkdir -p /etc/greetd
 cat << EOF > /etc/greetd/config.toml
 [terminal]
 vt = 7
@@ -377,7 +378,9 @@ EOF
 
 chown -R ${SUSER}:${SUSER} /home/${SUSER}
 
-chmod +x /home/${SUSER}/.config/waybar/scripts/power-menu.sh
+if [ -f "/home/${SUSER}/.config/waybar/scripts/power-menu.sh" ]; then
+    chmod +x /home/${SUSER}/.config/waybar/scripts/power-menu.sh
+fi
 
 echo "Setup done. Rebooting."
 sleep 3
