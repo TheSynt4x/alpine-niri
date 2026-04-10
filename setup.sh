@@ -202,7 +202,6 @@ export QT_QPA_PLATFORM=wayland
 export NIXPKGS_ALLOW_UNFREE=1
 
 # Aliases
-alias sudo='doas'
 alias nano='micro'
 alias vi='micro'
 EOF
@@ -212,10 +211,8 @@ EOF
   # Sync to .zshrc if it exists (Ensures interactivity works)
   if [ -f "$target_home/.zshrc" ]; then
     # Remove existing aliases if they exist to prevent duplicates
-    sed -i '/alias sudo=/d' "$target_home/.zshrc"
     sed -i '/alias nano=/d' "$target_home/.zshrc"
     
-    echo "alias sudo='doas'" >> "$target_home/.zshrc"
     echo "alias nano='micro'" >> "$target_home/.zshrc"
     echo "export NIXPKGS_ALLOW_UNFREE=1" >> "$target_home/.zshrc"
   fi
@@ -262,6 +259,43 @@ build-users-group = nixbld
 max-jobs = 4
 extra-experimental-features = nix-command flakes
 EOF
+
+REAL_NIX=$(command -v nix)
+REAL_NIX_ENV=$(command -v nix-env)
+REAL_NIX_CHANNEL=$(command -v nix-channel)
+REAL_NIX_BUILD=$(command -v nix-build)
+REAL_NIX_SHELL=$(command -v nix-shell)
+REAL_NIX_STORE=$(command -v nix-store)
+
+install_nix_wrapper() {
+  local name=$1
+  local real_bin=$2
+
+  cat <<EOF > "/usr/local/bin/$name"
+#!/bin/sh
+
+if [ "\$(id -u)" -ne 0 ]; then
+  echo "nix on this system must be run with doas: doas $name \"\$@\"" >&2
+  exit 1
+fi
+
+exec "$real_bin" "\$@"
+EOF
+  chmod +x "/usr/local/bin/$name"
+}
+
+install_nix_wrapper nix "$REAL_NIX"
+install_nix_wrapper nix-env "$REAL_NIX_ENV"
+install_nix_wrapper nix-channel "$REAL_NIX_CHANNEL"
+install_nix_wrapper nix-build "$REAL_NIX_BUILD"
+install_nix_wrapper nix-shell "$REAL_NIX_SHELL"
+install_nix_wrapper nix-store "$REAL_NIX_STORE"
+
+cat <<'EOF' > /usr/local/bin/sudo
+#!/bin/sh
+exec doas "$@"
+EOF
+chmod +x /usr/local/bin/sudo
 
 # Enable nix-daemon on boot
 rc-update add nix-daemon
