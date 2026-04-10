@@ -47,6 +47,11 @@ cups-filters
 cups-openrc
 avahi
 avahi-openrc
+elogind
+elogind-openrc
+polkit-elogind
+polkit-openrc
+polkit-gnome
 
 mesa-dri-gallium
 mesa-egl
@@ -63,7 +68,6 @@ shadow-login
 niri
 alacritty
 wofi
-seatd
 udev-init-scripts
 udev-init-scripts-openrc
 nautilus
@@ -122,15 +126,10 @@ fi
 
 # setup services
 setup-devd udev
-rc-update add seatd
+rc-update add elogind default
 rc-update add dbus
-adduser ${SUSER} seat
-adduser ${SUSER} video
-adduser ${SUSER} input
 adduser ${SUSER} lp
 adduser ${SUSER} lpadmin
-adduser greetd seat
-adduser greetd video
 
 adduser ${SUSER} netdev
 rc-update add iwd default
@@ -154,7 +153,7 @@ addgroup greetd tty || true
 
 # config greetd
 cat << EOF > /etc/conf.d/greetd
-rc_need=seatd
+rc_need=elogind
 EOF
 
 mkdir -p /etc/greetd
@@ -163,7 +162,7 @@ cat << EOF > /etc/greetd/config.toml
 vt = 7
 
 [default_session]
-command = "tuigreet --remember --time --cmd 'env LIBSEAT_BACKEND=seatd dbus-run-session niri --session'"
+command = "tuigreet --remember --time --cmd 'dbus-run-session niri --session'"
 user = "greetd"
 EOF
 
@@ -177,7 +176,6 @@ rc-update add greetd
 setup_env_for_user() {
   local target_user=$1
   local target_home=$2
-  local target_uid=$(id -u "$target_user")
   local profile_file="$target_home/.profile"
 
   echo "Configuring environment for $target_user..."
@@ -190,15 +188,6 @@ EOF
 
   # Create or overwrite .profile
   cat << EOF > "$profile_file"
-# XDG Runtime Directory
-if [ -z "\$XDG_RUNTIME_DIR" ]; then
-  export XDG_RUNTIME_DIR="/tmp/${target_uid}-runtime-dir"
-  if [ ! -d "\$XDG_RUNTIME_DIR" ]; then
-    mkdir -pm 0700 "\$XDG_RUNTIME_DIR"
-    chown $target_user "\$XDG_RUNTIME_DIR"
-  fi
-fi
-
 # Desktop & App Defaults
 export TERMINAL=alacritty
 export EXPLORER=nautilus
@@ -384,6 +373,8 @@ rc-service docker start
 
 rc-update add avahi-daemon default
 rc-service avahi-daemon start
+
+rc-service elogind start
 
 rc-update add cupsd default
 rc-service cupsd start
