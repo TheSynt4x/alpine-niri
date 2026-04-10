@@ -132,8 +132,12 @@ window#waybar.empty #window {
 
 #network.ethernet,
 #network.wifi,
-#bluetooth.off,
-#bluetooth.disabled,
 #network.disconnected {
     color: @muted;
+}
+
+#bluetooth.off,
+#bluetooth.disabled,
+#bluetooth {
+    color: @text;
 }
