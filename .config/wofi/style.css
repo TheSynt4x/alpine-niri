@@ -1,27 +1,23 @@
-/* Wofi Style - Waybar Inspired */
-
-/* Base Colors - Using Waybar's Mocha Palette */
-@define-color base rgba(25, 25, 25, 0.65);    /* Waybar base */
-@define-color surface0 rgba(29, 31, 33, 0.9); /* Waybar surface0 */
-@define-color surface1 rgba(0, 0, 0, 0.7);    /* Waybar surface1 */
-@define-color text rgba(255, 255, 255, 0.9);                   /* Waybar text */
-@define-color subtext0 rgba(255, 255, 255, 1); /* Waybar subtext0 */
-@define-color border rgba(255, 255, 255, 0.15);  /* Waybar border */
-@define-color highlight rgba(100, 100, 100, 0.3); /* Waybar surface2 */
+@define-color base rgba(18, 18, 18, 0.96);
+@define-color surface rgba(28, 28, 28, 0.98);
+@define-color surface2 rgba(40, 40, 40, 1);
+@define-color text #f2f2f2;
+@define-color muted #b8b8b8;
+@define-color border rgba(255, 255, 255, 0.10);
 
 window {
   font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Free";
   margin: 0px;
-  border: 1px solid @border;  /* Waybar's border */
-  background-color: @surface0; /* Waybar's surface0 */
+  border: 1px solid @border;
+  background-color: @surface;
   border-radius: 10px;
 }
 
 #input {
   margin: 5px;
   border: none;
-  color: @text;       /* Waybar's text */
-  background-color: @base; /* Waybar's base */
+  color: @text;
+  background-color: @base;
   border-radius: 5px;
   padding: 3px;
 }
@@ -46,7 +42,7 @@ window {
 #text {
   margin: 5px;
   border: none;
-  color: @subtext0;    /* Waybar's subtext0 (inactive) */
+  color: @muted;
 }
 
 #entry {
@@ -60,7 +56,7 @@ window {
 }
 
 #entry:selected {
-  background-color: @highlight;  /* Waybar's highlight color */
+  background-color: @surface2;
   border-radius: 5px;
   border: none;
 }
