@@ -26,6 +26,7 @@
       "bluetooth",
       "battery",
       "niri/language",
+      "tray",
       "custom/power-menu"
     ],
     "niri/workspaces": {
@@ -80,6 +81,10 @@
       "tooltip-format-wifi": "Signal Strength: {signalStrength}%",
       "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}/{cidr}\nGateway: {gwaddr}",
       "tooltip": true
+    },
+    "tray": {
+      "spacing": 8,
+      "icon-size": 18
     },
     "pulseaudio": {
       "format": "{icon} {volume}%",

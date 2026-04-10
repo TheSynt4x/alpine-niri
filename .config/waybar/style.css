@@ -29,6 +29,7 @@ window#waybar {
 #memory,
 #backlight,
 #network,
+#tray,
 #pulseaudio,
 #bluetooth,
 #battery,
@@ -97,6 +98,7 @@ window#waybar {
 #pulseaudio:hover,
 #bluetooth:hover,
 #battery:hover,
+#tray:hover,
 #clock:hover {
     background-color: @surface2;
     color: @text;
@@ -140,4 +142,21 @@ window#waybar.empty #window {
 #bluetooth.disabled,
 #bluetooth {
     color: @text;
+}
+
+#tray {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+#tray > .passive {
+    opacity: 0.8;
+}
+
+#tray > .active {
+    opacity: 1.0;
+}
+
+#tray > .needs-attention {
+    color: @warning;
 }
