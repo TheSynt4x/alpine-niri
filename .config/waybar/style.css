@@ -61,8 +61,8 @@ window#waybar {
 }
 
 #workspaces button:hover {
-    background-color: @surface2;
-    color: @text;
+    background-color: @text;
+    color: @base;
 }
 
 #window {
