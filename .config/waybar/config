@@ -133,6 +133,15 @@
       ]
     },
 
+    "custom/tlp": {
+      "return-type": "json",
+      "exec": "/home/user/.config/waybar/scripts/tlp-waybar.sh",
+      "interval": 5,
+      "format": "{}",
+      "tooltip": true,
+      "on-click": "/home/user/.config/waybar/scripts/tlp-toggle.sh"
+    },
+
     "clock": {
       "format": "{:%H:%M  •  %a %d}",
       "tooltip-format": "<tt>{calendar}</tt>"

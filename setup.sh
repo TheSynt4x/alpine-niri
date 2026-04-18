@@ -132,7 +132,11 @@ adduser ${SUSER} lpadmin
 
 adduser ${SUSER} netdev
 
-echo "permit keepenv :wheel" > /etc/doas.conf
+cat << EOF > /etc/doas.conf
+permit keepenv :wheel
+permit nopass ${SUSER} as root cmd /usr/sbin/tlp
+permit nopass ${SUSER} as root cmd /usr/sbin/tlp-pd
+EOF
 addgroup "$SUSER" wheel || true
 
 for TARGET in "/home/$SUSER" "/root"; do
@@ -225,6 +229,7 @@ if [ -d "${SCRIPT_DIR}/.config" ]; then
   mkdir -p "/home/${SUSER}/.config"
   cp -a "${SCRIPT_DIR}/.config/." "/home/${SUSER}/.config/"
   chown -R "${SUSER}:" "/home/${SUSER}/.config"
+  find "/home/${SUSER}/.config" -type f -name "*.sh" -exec chmod +x {} \;
 else
   echo "Warning: ${SCRIPT_DIR}/.config not found; skipping dotfiles copy."
 fi
@@ -402,10 +407,6 @@ gtk-font-name = JetBrainsMono Nerd Font
 EOF
 
 chown -R ${SUSER}:${SUSER} /home/${SUSER}
-
-if [ -f "/home/${SUSER}/.config/waybar/scripts/power-menu.sh" ]; then
-    chmod +x /home/${SUSER}/.config/waybar/scripts/power-menu.sh
-fi
 
 echo "Setup done. Rebooting."
 sleep 3
