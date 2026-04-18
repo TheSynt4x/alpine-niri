@@ -26,6 +26,7 @@
       "pulseaudio",
       "bluetooth",
       "battery",
+      "custom/tlp",
       "niri/language",
       "tray",
       "custom/power-menu"
