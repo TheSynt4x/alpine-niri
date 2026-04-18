@@ -250,47 +250,12 @@ mkdir -p /etc/nix
 
 # Configure Nix for flakes
 cat <<EOF > /etc/nix/nix.conf
-allowed-users = root
-trusted-users = root
+allowed-users = root ${SUSER}
+trusted-users = root ${SUSER}
 build-users-group = nixbld
 max-jobs = 4
 extra-experimental-features = nix-command flakes
 EOF
-
-resolve_system_bin() {
-  command -p -v "$1"
-}
-
-REAL_NIX=$(resolve_system_bin nix)
-REAL_NIX_ENV=$(resolve_system_bin nix-env)
-REAL_NIX_CHANNEL=$(resolve_system_bin nix-channel)
-REAL_NIX_BUILD=$(resolve_system_bin nix-build)
-REAL_NIX_SHELL=$(resolve_system_bin nix-shell)
-REAL_NIX_STORE=$(resolve_system_bin nix-store)
-
-install_nix_wrapper() {
-  local name=$1
-  local real_bin=$2
-
-  cat <<EOF > "/usr/local/bin/$name"
-#!/bin/sh
-
-if [ "\$(id -u)" -ne 0 ]; then
-  echo "nix on this system must be run with doas: doas $name \"\$@\"" >&2
-  exit 1
-fi
-
-exec "$real_bin" "\$@"
-EOF
-  chmod +x "/usr/local/bin/$name"
-}
-
-install_nix_wrapper nix "$REAL_NIX"
-install_nix_wrapper nix-env "$REAL_NIX_ENV"
-install_nix_wrapper nix-channel "$REAL_NIX_CHANNEL"
-install_nix_wrapper nix-build "$REAL_NIX_BUILD"
-install_nix_wrapper nix-shell "$REAL_NIX_SHELL"
-install_nix_wrapper nix-store "$REAL_NIX_STORE"
 
 cat <<'EOF' > /usr/local/bin/sudo
 #!/bin/sh
@@ -298,14 +263,21 @@ exec doas "$@"
 EOF
 chmod +x /usr/local/bin/sudo
 
+setup_nix_for_user() {
+  local target_user="$1"
+
+  su - "$target_user" -c 'nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs'
+  su - "$target_user" -c 'nix-channel --add https://github.com/nix-community/nixGL/archive/main.tar.gz nixgl'
+  su - "$target_user" -c 'nix-channel --update'
+  su - "$target_user" -c 'nix-env -iA nixgl.auto.nixGLDefault'
+}
+
 # Enable nix-daemon on boot
 rc-update add nix-daemon
 rc-service nix-daemon restart
 
-nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
-nix-channel --add https://github.com/nix-community/nixGL/archive/main.tar.gz nixgl
-nix-channel --update
-nix-env -iA nixgl.auto.nixGLDefault
+setup_nix_for_user "root"
+setup_nix_for_user "${SUSER}"
 
 # --- Safe Zsh Setup (No Nuking) ---
 chsh -s /bin/zsh $SUSER
@@ -417,6 +389,8 @@ rc-update del networking boot 2>/dev/null || true
 
 rc-update add networkmanager default
 # End of network switch, now we just need to reboot and hope for the best
+
+addgroup "$SUSER" docker || true
 
 # Force GTK to use the icons you installed
 mkdir -p /home/${SUSER}/.config/gtk-3.0
