@@ -23,6 +23,7 @@ window#waybar {
 }
 
 #workspaces,
+#custom-niri-workspaces,
 #window,
 #disk,
 #cpu,
@@ -43,12 +44,14 @@ window#waybar {
     transition: all 0.2s ease-in-out;
 }
 
-#workspaces {
+#workspaces,
+#custom-niri-workspaces {
     background: transparent;
     padding: 0;
 }
 
-#workspaces button {
+#workspaces button,
+#custom-niri-workspaces {
     background-color: @surface;
     color: @text;
     margin: 0 2px;
@@ -61,7 +64,8 @@ window#waybar {
     color: @base;
 }
 
-#workspaces button:hover {
+#workspaces button:hover,
+#custom-niri-workspaces:hover {
     background-color: @text;
     color: @base;
 }
@@ -75,12 +79,33 @@ window#waybar {
 #cpu,
 #memory,
 #backlight,
-#network,
 #pulseaudio,
 #bluetooth,
 #battery,
 #clock,
 #language {
+    color: @text;
+}
+
+#network {
+    color: @text;
+}
+
+#network.excellent,
+#network.good {
+    color: @success;
+}
+
+#network.medium {
+    color: @warning;
+}
+
+#network.low,
+#network.disconnected {
+    color: @critical;
+}
+
+#network.ethernet {
     color: @text;
 }
 
@@ -101,12 +126,10 @@ window#waybar {
 #tray:hover,
 #clock:hover {
     background-color: @surface2;
-    color: @text;
+    color: inherit;
 }
 
-#battery.warning,
-#network.medium,
-#network.low {
+#battery.warning {
     color: @warning;
 }
 
@@ -119,23 +142,20 @@ window#waybar {
     to { opacity: 0.5; }
 }
 
-.modules-left { margin-left: 5px; }
-.modules-right { margin-right: 5px; }
+.modules-left {
+    margin-left: 5px;
+}
+
+.modules-right {
+    margin-right: 5px;
+}
 
 window#waybar.empty #window {
     opacity: 0;
 }
 
-#network.excellent,
-#network.good,
 #bluetooth.connected {
     color: @success;
-}
-
-#network.ethernet,
-#network.wifi,
-#network.disconnected {
-    color: @muted;
 }
 
 #bluetooth.off,
@@ -154,7 +174,7 @@ window#waybar.empty #window {
 }
 
 #tray > .active {
-    opacity: 1.0;
+    opacity: 1;
 }
 
 #tray > .needs-attention {

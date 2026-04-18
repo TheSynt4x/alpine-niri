@@ -1,0 +1,78 @@
+{
+  "firefox": {
+    "icon": "󰈹",
+    "color": "#ff9e64"
+  },
+  "Firefox": {
+    "icon": "󰈹",
+    "color": "#ff9e64"
+  },
+  "firefox-esr": {
+    "icon": "󰈹",
+    "color": "#ff9e64"
+  },
+  "Alacritty": {
+    "icon": "",
+    "color": "#a6da95"
+  },
+  "alacritty": {
+    "icon": "",
+    "color": "#a6da95"
+  },
+  "foot": {
+    "icon": "",
+    "color": "#a6da95"
+  },
+  "kitty": {
+    "icon": "",
+    "color": "#a6da95"
+  },
+  "wezterm": {
+    "icon": "",
+    "color": "#a6da95"
+  },
+  "code": {
+    "icon": "󰨞",
+    "color": "#7aa2f7"
+  },
+  "Code": {
+    "icon": "󰨞",
+    "color": "#7aa2f7"
+  },
+  "codium": {
+    "icon": "󰨞",
+    "color": "#7aa2f7"
+  },
+  "VSCodium": {
+    "icon": "󰨞",
+    "color": "#7aa2f7"
+  },
+  "org.gnome.Nautilus": {
+    "icon": "",
+    "color": "#89b4fa"
+  },
+  "nautilus": {
+    "icon": "",
+    "color": "#89b4fa"
+  },
+  "discord": {
+    "icon": "󰙯",
+    "color": "#cba6f7"
+  },
+  "Discord": {
+    "icon": "󰙯",
+    "color": "#cba6f7"
+  },
+  "spotify": {
+    "icon": "󰓇",
+    "color": "#a6e3a1"
+  },
+  "Spotify": {
+    "icon": "󰓇",
+    "color": "#a6e3a1"
+  },
+  "__default__": {
+    "icon": "󰣆",
+    "color": "#b8b8b8"
+  }
+}
