@@ -78,7 +78,7 @@ networkmanager-wifi
 networkmanager-cli
 networkmanager-tui
 networkmanager-dmenu
-iwd
+wpa_supplicant
 swaybg
 gtklock
 firefox
@@ -117,7 +117,6 @@ setup-timezone -z Europe/Stockholm
 
 # Find user with id 1000
 SUSER=$(awk -F: '$3 == 1000 {print $1}' /etc/passwd)
-SUSERID=$(id -u $SUSER)
 
 if [ -z "$SUSER" ]; then
   echo "Error: No user with ID 1000 found. Please create a user first."
@@ -127,14 +126,13 @@ fi
 # setup services
 setup-devd udev
 rc-update add elogind default
-rc-update add dbus
+rc-update add dbus default
 adduser ${SUSER} lp
 adduser ${SUSER} lpadmin
 
 adduser ${SUSER} netdev
-rc-update add iwd default
 
-echo "permit keepenv :wheel" > /etc/apk/doas.conf
+echo "permit keepenv :wheel" > /etc/doas.conf
 addgroup "$SUSER" wheel || true
 
 for TARGET in "/home/$SUSER" "/root"; do
@@ -387,7 +385,6 @@ rc-service bluetooth start
 echo "Configuring NetworkManager and disabling old stack..."
 
 # 1. Config NM
-mkdir -p /etc/NetworkManager/conf.d
 cat << EOF > /etc/NetworkManager/NetworkManager.conf
 [main]
 dhcp=internal
@@ -395,29 +392,31 @@ plugins=ifupdown,keyfile
 [ifupdown]
 managed=true
 [device]
-wifi.backend=iwd
-wifi.iwd.autoconnect=yes
+wifi.backend=wpa_supplicant
+wifi.scan-rand-mac-address=no
 EOF
 
-# 2. Config iwd
-mkdir -p /etc/iwd
-cat << EOF > /etc/iwd/main.conf
-[General]
-EnableNetworkConfiguration=false
-EOF
+# 2. Clean up old Wi-Fi stack
+rm -f /etc/wpa_supplicant/wpa_supplicant.conf 2>/dev/null || true
 
 # 3. Clean up interfaces
 if [ -f /etc/network/interfaces ]; then
-    echo -e "auto lo\niface lo inet loopback" > /etc/network/interfaces
+    printf "auto lo\niface lo inet loopback\n" > /etc/network/interfaces
 fi
 
 # 4. Enable/Disable Services
-addgroup ${SUSER} netdev || true
 addgroup ${SUSER} plugdev || true
 
-rc-update add iwd default
-rc-update add networkmanager default
+rc-service iwd stop 2>/dev/null || true
+rc-update del iwd default 2>/dev/null || true
+rc-update del iwd boot 2>/dev/null || true
+
+rc-service networking stop 2>/dev/null || true
 rc-update del networking default 2>/dev/null || true
+rc-update del networking boot 2>/dev/null || true
+
+rc-update add networkmanager default
+# End of network switch, now we just need to reboot and hope for the best
 
 # Force GTK to use the icons you installed
 mkdir -p /home/${SUSER}/.config/gtk-3.0
