@@ -34,6 +34,7 @@ window#waybar {
 #pulseaudio,
 #bluetooth,
 #battery,
+#power-profiles-daemon,
 #language,
 #clock,
 #custom-power-menu {
@@ -48,6 +49,7 @@ window#waybar {
 #custom-niri-workspaces {
     background: transparent;
     padding: 0;
+    margin: 4px 3px;
 }
 
 #workspaces button,
@@ -64,8 +66,7 @@ window#waybar {
     color: @base;
 }
 
-#workspaces button:hover,
-#custom-niri-workspaces:hover {
+#workspaces button:hover {
     background-color: @text;
     color: @base;
 }
@@ -82,6 +83,7 @@ window#waybar {
 #pulseaudio,
 #bluetooth,
 #battery,
+#power-profiles-daemon,
 #clock,
 #language {
     color: @text;
@@ -109,6 +111,18 @@ window#waybar {
     color: @text;
 }
 
+#power-profiles-daemon.performance {
+    color: @warning;
+}
+
+#power-profiles-daemon.balanced {
+    color: @text;
+}
+
+#power-profiles-daemon.power-saver {
+    color: @success;
+}
+
 #custom-power-menu {
     color: @muted;
     background: transparent;
@@ -123,6 +137,7 @@ window#waybar {
 #pulseaudio:hover,
 #bluetooth:hover,
 #battery:hover,
+#power-profiles-daemon:hover,
 #tray:hover,
 #clock:hover {
     background-color: @surface2;

@@ -77,7 +77,7 @@ binds {
     Alt+WheelScrollUp { focus-workspace-up; }
 
     Print { screenshot; }
-    Alt+B { spawn "pkill waybar; waybar"; }
+    Alt+B { spawn "$HOME/.config/waybar/scripts/restart.sh"; }
     Super+L { spawn "gtklock"; }
 }
 

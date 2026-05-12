@@ -16,7 +16,7 @@ do
 done
 /usr/libexec/xdg-desktop-portal-wlr &
 /usr/libexec/xdg-desktop-portal &
-tlp-pd &
+doas /usr/sbin/tlp-pd &
 
 swaybg -i "$HOME/wallpapers/wall.jpg" -m fill &
 waybar &

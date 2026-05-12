@@ -27,17 +27,10 @@ fi
 mkdir -p "$TARGET_CONFIG"
 cp -a "$SOURCE_CONFIG/." "$TARGET_CONFIG/"
 chown -R "${SUSER}:" "$TARGET_CONFIG"
+find "/home/${SUSER}/.config" -type f -name "*.sh" -exec chmod +x {} \;
 
 if [ -f "${TARGET_CONFIG}/gtklock/config.ini" ]; then
   sed -i "s|/home/user|/home/${SUSER}|g" "${TARGET_CONFIG}/gtklock/config.ini"
-fi
-
-if [ -f "${TARGET_CONFIG}/niri/scripts/startup.sh" ]; then
-  chmod +x "${TARGET_CONFIG}/niri/scripts/startup.sh"
-fi
-
-if [ -f "${TARGET_CONFIG}/waybar/scripts/power-menu.sh" ]; then
-  chmod +x "${TARGET_CONFIG}/waybar/scripts/power-menu.sh"
 fi
 
 echo "Synced .config to ${TARGET_HOME}."
